@@ -95,6 +95,7 @@
             <option value="teacher">teacher only</option>
           </select>
           <label><input type="checkbox" id="try-sql" checked> Shop database (SQL check)</label>
+          <label><input type="checkbox" id="try-judge"> Judge check</label>
           <button type="submit">Send</button>
           <button type="button" class="secondary" id="reset">Reset all data</button>
         </div>
@@ -154,7 +155,8 @@ async function refresh() {
     document.getElementById("k-memory").textContent = stats.memory_size;
     const s = stats.config.student[0], te = stats.config.teacher[0];
     document.getElementById("config").textContent =
-      `student: ${s ? s.model : "not set"} · teacher: ${te ? te.model : "not set"}`;
+      `student: ${s ? s.model : "not set"} · teacher: ${te ? te.model : "not set"}` +
+      (stats.config.judge ? ` · judge: ${stats.config.judge}` : "");
 
     const window = 20, tl = stats.timeline, labels = [], values = [];
     for (let i = 0; i < tl.length; i++) {
@@ -201,7 +203,8 @@ document.getElementById("try").addEventListener("submit", async ev => {
   const res = await fetch("/v1/chat/completions", {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ model: "apprentice", messages,
-      apprentice: { mode: document.getElementById("try-mode").value, verifier: sql ? "sql" : null, tag: "try" } }),
+      apprentice: { mode: document.getElementById("try-mode").value, verifier: sql ? "sql" : null,
+                    judge: document.getElementById("try-judge").checked ? "decision" : null, tag: "try" } }),
   });
   const data = await res.json();
   if (!res.ok) { out.textContent = data.error?.message || "Request failed"; return; }

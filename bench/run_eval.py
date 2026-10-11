@@ -51,14 +51,18 @@ def matches(pred_rows, gold_rows) -> bool:
     return any(sorted((r[i] for r in pred), key=repr) == gold_col for i in range(len(pred[0])))
 
 
-async def ask(client: httpx.AsyncClient, url: str, item: dict, mode: str, memory: bool, learn: bool, tag: str) -> dict:
+async def ask(
+    client: httpx.AsyncClient, url: str, item: dict, mode: str, memory: bool, learn: bool, judge: str | None, tag: str
+) -> dict:
     body = {
         "model": "apprentice",
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": item["question"]},
         ],
-        "apprentice": {"mode": mode, "memory": memory, "learn": learn, "verifier": "sql", "tag": tag},
+        "apprentice": {
+            "mode": mode, "memory": memory, "learn": learn, "verifier": "sql", "judge": judge, "tag": tag,
+        },
     }
     try:
         r = await client.post(f"{url}/v1/chat/completions", json=body, timeout=300)
@@ -86,10 +90,21 @@ async def ask(client: httpx.AsyncClient, url: str, item: dict, mode: str, memory
 
 
 async def run_phase(
-    db: Database, url: str, items: list[dict], phase: str, mode: str, memory: bool, learn: bool, concurrency: int
+    db: Database,
+    url: str,
+    items: list[dict],
+    phase: str,
+    mode: str,
+    memory: bool,
+    learn: bool,
+    judge: str | None,
+    concurrency: int,
 ) -> dict:
     sem = asyncio.Semaphore(concurrency)
-    tag = f"{phase}:{mode}"
+    if mode != "cascade":
+        judge = None
+    label = f"{mode}+{judge}" if judge else mode
+    tag = f"{phase}:{label}"
     done = 0
 
     async with httpx.AsyncClient() as client:
@@ -97,7 +112,7 @@ async def run_phase(
         async def one(item):
             nonlocal done
             async with sem:
-                res = await ask(client, url, item, mode, memory, learn, tag)
+                res = await ask(client, url, item, mode, memory, learn, judge, tag)
             done += 1
             print(f"\r  {tag:<18} {done}/{len(items)}", end="", flush=True)
             return res
@@ -114,7 +129,7 @@ async def run_phase(
     correct = sum(r["correct"] for r in results)
     summary = {
         "phase": phase,
-        "mode": mode,
+        "mode": label,
         "n": n,
         "correct": correct,
         "accuracy": correct / n if n else 0.0,
@@ -154,6 +169,9 @@ async def main() -> None:
     parser.add_argument("--url", default="http://localhost:8000")
     parser.add_argument("--concurrency", type=int, default=2)
     parser.add_argument("--limit", type=int, default=0, help="use only the first N questions per split")
+    parser.add_argument(
+        "--judge", choices=["decision"], default=None, help="decision-model correctness check in cascade runs"
+    )
     args = parser.parse_args()
 
     data = load()
@@ -163,7 +181,7 @@ async def main() -> None:
         print(f"[{phase}]")
         for split, mode, memory, learn in PLANS[phase]:
             items = data[split][: args.limit] if args.limit else data[split]
-            await run_phase(db, args.url, items, phase, mode, memory, learn, args.concurrency)
+            await run_phase(db, args.url, items, phase, mode, memory, learn, args.judge, args.concurrency)
 
 
 if __name__ == "__main__":

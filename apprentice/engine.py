@@ -6,6 +6,10 @@ Modes:
   cascade  - with a verifier: student first, escalate if the check fails
              without a verifier: student if memory has a similar example,
              otherwise teacher
+
+In cascade mode, judge="decision" adds a second check on student answers that
+pass the verifier: a decision model (Von, Kev or Jev, see judges.py) scores
+whether the answer is actually correct, and low scores escalate to the teacher.
 """
 
 import time
@@ -15,11 +19,16 @@ import httpx
 
 from .config import Settings
 from .db import Database
+from .judges import JudgeError, systemone_check
 from .memory import Hit, Memory
 from .providers import Completion, ProviderError, chat
-from .verifiers import verify_sql
+from .verifiers import preview_sql, verify_sql
 
 MODES = ("cascade", "student", "teacher")
+JUDGES = ("decision",)
+
+_SQL_STATEMENT = "The SQL query correctly answers the user's question, and its result is the requested answer."
+_TEXT_STATEMENT = "The assistant's answer correctly and completely answers the user's question."
 
 
 @dataclass
@@ -28,6 +37,7 @@ class Options:
     use_memory: bool = True
     learn: bool = True
     verifier: str | None = None
+    judge: str | None = None
     tag: str | None = None
 
 
@@ -44,6 +54,7 @@ class Result:
     latency_ms: float
     memory_hits: int
     top_sim: float
+    check_score: float | None
     trace_id: int
 
 
@@ -57,6 +68,10 @@ def last_user_text(messages: list[dict]) -> str:
         if isinstance(content, list):
             return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
     return ""
+
+
+def system_text(messages: list[dict]) -> str:
+    return "\n".join(m["content"] for m in messages if m.get("role") == "system" and isinstance(m.get("content"), str))
 
 
 def with_examples(messages: list[dict], hits: list[Hit]) -> list[dict]:
@@ -95,9 +110,31 @@ class Engine:
     async def _teacher(self, messages: list[dict]) -> Completion:
         return await chat(self.client, self.s.teacher, messages, timeout_s=self.s.timeout_s)
 
+    async def _judge(self, opts: Options, messages: list[dict], answer: str):
+        """Returns (ok, score, cost, note). Judge failures let the answer through."""
+        if opts.judge != "decision":
+            return True, None, 0.0, ""
+        judge = self.s.judge
+        if judge is None:
+            return True, None, 0.0, "judge not configured"
+        state = {"instructions": system_text(messages)[:4000], "question": last_user_text(messages)}
+        if opts.verifier == "sql":
+            state.update(preview_sql(self.s.bench_db_path, answer))
+            statement = _SQL_STATEMENT
+        else:
+            state["answer"] = answer
+            statement = _TEXT_STATEMENT
+        try:
+            v = await systemone_check(self.client, judge, self.s.judge_threshold, state, statement)
+        except JudgeError as e:
+            return True, None, 0.0, f"judge unavailable ({e})"
+        return v.ok, v.score, v.cost, f"judge {v.score:.2f}"
+
     async def handle(self, messages: list[dict], opts: Options) -> Result:
         if opts.mode not in MODES:
             raise ValueError(f"mode must be one of {MODES}")
+        if opts.judge and opts.judge not in JUDGES:
+            raise ValueError(f"judge must be one of {JUDGES}")
         started = time.perf_counter()
         question = last_user_text(messages)
 
@@ -108,6 +145,8 @@ class Engine:
         relevant = [h for h in hits if h.sim >= self.s.memory_min_sim]
 
         spent: list[Completion] = []
+        extra_cost = 0.0
+        check_score = None
         escalated = False
 
         if opts.mode == "teacher":
@@ -116,45 +155,46 @@ class Engine:
         elif opts.mode == "student":
             final = await self._student(messages, relevant)
             reason = "mode=student"
-        elif opts.verifier:
+        elif not opts.verifier and not relevant:
+            final = await self._teacher(messages)
+            escalated = True
+            reason = f"no similar memory (best sim {top_sim:.2f})"
+        else:
             try:
                 attempt = await self._student(messages, relevant)
                 spent.append(attempt)
-                ok, why = self._verify(opts.verifier, attempt.content)
+                if opts.verifier:
+                    ok, why = self._verify(opts.verifier, attempt.content)
+                    why = f"{opts.verifier} check: {why}"
+                else:
+                    ok, why = True, f"similar memory found (sim {top_sim:.2f})"
+                if ok:
+                    ok, check_score, judge_cost, note = await self._judge(opts, messages, attempt.content)
+                    extra_cost += judge_cost
+                    if note:
+                        why = f"{why}; {note}"
             except ProviderError as e:
                 ok, why = False, f"student unavailable ({e})"
             if ok:
                 final = attempt
-                reason = f"student passed {opts.verifier} check: {why}"
+                reason = f"student passed: {why}"
             else:
                 final = await self._teacher(messages)
                 escalated = True
-                reason = f"student failed {opts.verifier} check: {why}"
-        elif relevant:
-            try:
-                final = await self._student(messages, relevant)
-                reason = f"similar memory found (sim {top_sim:.2f})"
-            except ProviderError as e:
-                final = await self._teacher(messages)
-                escalated = True
-                reason = f"student unavailable ({e})"
-        else:
-            final = await self._teacher(messages)
-            escalated = True
-            reason = f"no similar memory (best sim {top_sim:.2f})"
+                reason = f"escalated: {why}"
         spent.append(final)
 
         served_by = final.endpoint.name
-        cost = sum(c.cost for c in spent)
+        cost = sum(c.cost for c in spent) + extra_cost
         latency_ms = (time.perf_counter() - started) * 1000
         trace_id = self.db.execute(
             """INSERT INTO traces (ts, mode, served_by, model, escalated, reason, question, response,
-               prompt_tokens, completion_tokens, cost_usd, latency_ms, memory_hits, top_sim, tag)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+               prompt_tokens, completion_tokens, cost_usd, latency_ms, memory_hits, top_sim, tag, check_score)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 time.time(), opts.mode, served_by, final.endpoint.model, int(escalated), reason,
                 question, final.content, final.prompt_tokens, final.completion_tokens, cost,
-                latency_ms, len(relevant), top_sim, opts.tag,
+                latency_ms, len(relevant), top_sim, opts.tag, check_score,
             ),
         )
 
@@ -177,5 +217,6 @@ class Engine:
             latency_ms=latency_ms,
             memory_hits=len(relevant),
             top_sim=top_sim,
+            check_score=check_score,
             trace_id=trace_id,
         )

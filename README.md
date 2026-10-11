@@ -39,8 +39,18 @@ Per-request options go in an `apprentice` object in the request body (or `X-Appr
 | `memory` | use remembered teacher answers as examples | `true` |
 | `learn` | store teacher answers in memory | `true` |
 | `verifier` | `sql` (student SQL must run and return rows, otherwise escalate) | none |
+| `judge` | `decision`: a decision model scores whether the student's answer is actually correct; scores below `JUDGE_THRESHOLD` escalate | none |
 
-Without a verifier, the cascade sends a request to the student only when memory holds a similar teacher answer.
+Without a verifier, the cascade sends a request to the student only when memory holds a similar teacher answer. The verifier catches answers that are clearly broken; the judge catches answers that run but are wrong. If the judge is unreachable, the answer is let through and the trace says so.
+
+The judge is any server that speaks the `/v1/systemone` decision protocol. By default it's [Von](https://github.com/wfzyx/von) (open-weight, Apache-2.0, runs on CPU):
+
+```bash
+pip install von-sdk
+von serve --port 8020 --noul-decision raw   # raw = calibrated probabilities, needed for thresholds
+```
+
+[Kev](https://github.com/jaredpalmer/kev) (Apache-2.0) works the same way.
 
 ## Benchmark
 
@@ -58,8 +68,7 @@ Test questions are never written to memory.
 |---|---|---|
 | Student | Qwen3 (small) via Ollama | Apache-2.0 |
 | Teacher | GLM-5.1 via Command Code Provider API | MIT |
-
-Closed models are used only as optional routers or evaluation judges, never as the teacher.
+| Judge (optional) | [Von](https://huggingface.co/wfzyx/von) decision model, local | Apache-2.0 |
 
 ## License
 

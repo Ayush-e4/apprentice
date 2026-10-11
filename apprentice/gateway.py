@@ -61,6 +61,7 @@ def _options(request: Request, body: dict) -> Options:
         use_memory=_flag(pick("memory"), True),
         learn=_flag(pick("learn"), True),
         verifier=pick("verifier") or None,
+        judge=pick("judge") or None,
         tag=pick("tag") or None,
     )
 
@@ -109,6 +110,7 @@ async def chat_completions(request: Request):
             "latency_ms": round(result.latency_ms, 1),
             "memory_hits": result.memory_hits,
             "top_sim": round(result.top_sim, 3),
+            "check_score": result.check_score,
             "trace_id": result.trace_id,
         },
     }
@@ -146,6 +148,7 @@ def stats():
             "student": describe(settings.student),
             "teacher": describe(settings.teacher),
             "embed": settings.embed.model if settings.embed else None,
+            "judge": settings.judge.model if settings.judge else None,
         },
     }
 
@@ -154,7 +157,7 @@ def stats():
 def traces(limit: int = 50):
     return db.query(
         """SELECT id, ts, mode, served_by, model, escalated, reason, question, response,
-                  cost_usd, latency_ms, memory_hits, top_sim, tag
+                  cost_usd, latency_ms, memory_hits, top_sim, tag, check_score
            FROM traces ORDER BY id DESC LIMIT ?""",
         (min(limit, 500),),
     )
