@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apprentice Checkout</title>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #16181d; --muted: #616875; --border: #e3e6eb;
+    --student: #1f9d6b; --accent: #e8590c; --bad: #d6336c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1115; --panel: #171a21; --text: #e8eaee; --muted: #9aa2af; --border: #262b35;
+            --student: #3ccf91; --accent: #ff8a3d; --bad: #ff6b9a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 20px 24px 8px; display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; }
+  h1 { margin: 0; font-size: 22px; }
+  h2 { margin: 0 0 10px; font-size: 15px; }
+  .sub, .muted { color: var(--muted); }
+  main { padding: 8px 24px 32px; display: grid; gap: 16px; max-width: 640px; }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; }
+  td.num, th.num { text-align: right; }
+  input[type=number] { width: 64px; font: inherit; color: var(--text); background: var(--bg);
+         border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; }
+  .total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 650; margin-top: 12px; }
+  button { font: inherit; font-weight: 600; border: none; border-radius: 8px; padding: 10px 16px;
+           background: var(--accent); color: #fff; cursor: pointer; width: 100%; margin-top: 12px; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
+           color: #fff; background: var(--student); }
+  #status { min-height: 1.4em; margin-top: 10px; }
+  .ok { color: var(--student); font-weight: 600; } .err { color: var(--bad); font-weight: 600; }
+  a { color: var(--accent); }
+  @media (max-width: 600px) { header, main { padding-left: 16px; padding-right: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Checkout</h1>
+  <span class="sub">Kirana basket, paid with Razorpay</span>
+  <span id="mode"></span>
+  <a href="/">Back to dashboard</a>
+</header>
+<main>
+  <section class="panel">
+    <h2>Basket</h2>
+    <table>
+      <thead><tr><th>Item</th><th class="num">Price</th><th class="num">Qty</th><th class="num">Subtotal</th></tr></thead>
+      <tbody id="items"></tbody>
+    </table>
+    <div class="total"><span>Total</span><span id="total">₹0</span></div>
+    <button id="pay" disabled>Pay with Razorpay</button>
+    <div id="status" class="muted"></div>
+  </section>
+  <p class="muted">In test mode, pay with any of Razorpay's test methods (for example UPI ID <code>success@razorpay</code>). No real money moves.</p>
+</main>
+<script>
+// Prices in paise, so totals stay exact.
+const CATALOG = [
+  { id: "aata-1kg", name: "Aashirvaad Atta, 1 kg", price: 5500, qty: 2 },
+  { id: "amul-butter-100g", name: "Amul Butter, 100 g", price: 5800, qty: 1 },
+  { id: "toor-dal-1kg", name: "Toor Dal, 1 kg", price: 16000, qty: 0 },
+  { id: "parle-g", name: "Parle-G, 250 g", price: 2500, qty: 0 },
+];
+
+const $ = (id) => document.getElementById(id);
+const rupees = (paise) => "₹" + (paise / 100).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+let keyId = null;
+
+function total() { return CATALOG.reduce((sum, item) => sum + item.price * item.qty, 0); }
+
+function render() {
+  $("items").innerHTML = CATALOG.map((item, i) => `
+    <tr>
+      <td>${item.name}</td>
+      <td class="num">${rupees(item.price)}</td>
+      <td class="num"><input type="number" min="0" max="20" value="${item.qty}" data-i="${i}" aria-label="Quantity of ${item.name}"></td>
+      <td class="num">${rupees(item.price * item.qty)}</td>
+    </tr>`).join("");
+  $("total").textContent = rupees(total());
+  $("pay").disabled = !keyId || total() < 100;
+}
+
+$("items").addEventListener("change", (e) => {
+  const i = e.target.dataset.i;
+  if (i === undefined) return;
+  CATALOG[i].qty = Math.max(0, Math.min(20, parseInt(e.target.value, 10) || 0));
+  render();
+});
+
+function setStatus(text, kind = "muted") { $("status").className = kind; $("status").textContent = text; }
+
+async function postJSON(url, body) {
+  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || `request failed (${r.status})`);
+  return data;
+}
+
+$("pay").addEventListener("click", async () => {
+  const basket = CATALOG.filter((item) => item.qty > 0);
+  $("pay").disabled = true;
+  setStatus("Creating order…");
+  let order;
+  try {
+    order = await postJSON("/api/create-order", {
+      amount: total(),
+      currency: "INR",
+      notes: { items: basket.map((item) => `${item.qty} x ${item.name}`).join("; ") },
+    });
+  } catch (err) {
+    setStatus("Could not create the order: " + err.message, "err");
+    render();
+    return;
+  }
+
+  const rzp = new Razorpay({
+    key: keyId,
+    order_id: order.order_id,
+    amount: order.amount,
+    currency: order.currency,
+    name: "Apprentice Kirana",
+    description: basket.map((item) => `${item.qty} x ${item.name}`).join(", "),
+    theme: { color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#e8590c" },
+    handler: async (response) => {
+      setStatus("Verifying payment…");
+      try {
+        const result = await postJSON("/api/verify-payment", response);
+        setStatus(`Paid ${rupees(order.amount)}. Payment ${result.payment_id} verified.`, "ok");
+      } catch (err) {
+        setStatus("Payment could not be verified: " + err.message, "err");
+      }
+      render();
+    },
+    modal: {
+      ondismiss: () => { setStatus("Payment cancelled."); render(); },
+    },
+  });
+  rzp.on("payment.failed", (resp) => {
+    setStatus("Payment failed: " + (resp.error && resp.error.description || "unknown error"), "err");
+    render();
+  });
+  rzp.open();
+});
+
+(async () => {
+  try {
+    const cfg = await (await fetch("/api/payments/config")).json();
+    if (!cfg.enabled) { setStatus("Razorpay keys are not set in .env.", "err"); }
+    else {
+      keyId = cfg.key_id;
+      $("mode").innerHTML = cfg.test_mode ? '<span class="badge">Test mode</span>' : "";
+    }
+  } catch { setStatus("Could not reach the server.", "err"); }
+  render();
+})();
+</script>
+</body>
+</html>

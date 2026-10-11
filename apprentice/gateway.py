@@ -14,9 +14,11 @@ from fastapi.responses import FileResponse, JSONResponse
 from .config import settings
 from .db import Database
 from .engine import MODES, Engine, Options
+from .payments import router as payments_router
 from .providers import ProviderError
 
 DASHBOARD = Path(__file__).parent / "dashboard" / "index.html"
+CHECKOUT = Path(__file__).parent / "dashboard" / "checkout.html"
 
 db = Database(settings.db_path)
 
@@ -34,6 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Apprentice", lifespan=lifespan)
+app.include_router(payments_router)
 
 
 def _error(status: int, message: str, kind: str) -> JSONResponse:
@@ -192,3 +195,8 @@ def bench_system_prompt():
 @app.get("/")
 def dashboard():
     return FileResponse(DASHBOARD)
+
+
+@app.get("/checkout")
+def checkout():
+    return FileResponse(CHECKOUT)
