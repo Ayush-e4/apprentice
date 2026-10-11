@@ -131,6 +131,7 @@ Put options in an `apprentice` object in the request body, or send them as `X-Ap
 | `verifier` | `sql` | none | The student's SQL must run against the shop database and return rows, otherwise the request escalates. |
 | `judge` | `decision`, `llm` | none | A second check on answers that passed the verifier. Low scores escalate. See [Judges](#judges). |
 | `tag` | any string | none | Label stored with the trace (the benchmark uses it to name runs). |
+| `scope` | any string | hash of the system messages | Memory scope. Remembered answers are only reused for requests in the same scope, so apps with different system prompts never see each other's memory. Give two apps the same `scope` to share memory on purpose. |
 
 In `cascade` mode **without** a verifier, the student answers only when memory holds a similar teacher answer (similarity at least `MEMORY_MIN_SIM`); otherwise the teacher answers. If a judge is unreachable or not configured, the student's answer is let through and the trace's `reason` says so.
 

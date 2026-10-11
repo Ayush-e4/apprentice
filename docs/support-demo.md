@@ -91,4 +91,4 @@ Then start the web app with `SUPPORT_URL` pointing at that gateway, and open <ht
 | `GET /api/support/stats` | Totals, memory size and timeline for `tag=support` traces |
 | `POST /api/support/reset` | Deletes `tag=support` traces and the memory they created |
 
-Memory is shared by everything that runs through the gateway, and memory search does not filter by tag. For a clean demo, use a separate `APPRENTICE_DB` (for example `APPRENTICE_DB=data/runtime/support.db`) or click **Reset demo** first.
+Memory is scoped by system prompt, so the support demo only ever reuses support answers, even when it shares a gateway with Kirana Copilot. For a clean demo, click **Reset demo** first, or use a separate `APPRENTICE_DB` (for example `APPRENTICE_DB=data/runtime/support.db`).

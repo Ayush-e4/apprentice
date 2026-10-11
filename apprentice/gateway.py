@@ -14,6 +14,7 @@ from .config import settings
 from .db import Database
 from .engine import MODES, Engine, Options
 from .health import router as health_router
+from .memory import backfill_scopes
 from .providers import ProviderError
 from .shop import router as shop_router
 from .support import router as support_router
@@ -28,6 +29,7 @@ async def lifespan(app: FastAPI):
         from bench.shopdb import build
 
         build()
+    backfill_scopes(db)  # memory saved before scoping gets the scope of the app that made it
     app.state.client = httpx.AsyncClient()
     app.state.engine = Engine(settings, db, app.state.client)
     yield
@@ -68,6 +70,7 @@ def _options(request: Request, body: dict) -> Options:
         verifier=pick("verifier") or None,
         judge=pick("judge") or None,
         tag=pick("tag") or None,
+        scope=str(pick("scope") or "").strip() or None,
     )
 
 
