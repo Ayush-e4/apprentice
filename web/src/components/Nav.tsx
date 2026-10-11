@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/support", label: "QuickBite Support" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/guide", label: "Guide" },
+  { href: "/what-we-did", label: "What we did" },
 ];
 
 const REPO = "https://github.com/Ayush-e4/apprentice";
@@ -43,11 +44,11 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-ink bg-paper">
-      <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-6 px-4 sm:px-6 lg:gap-10">
+      <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-6 px-4 sm:px-6 xl:gap-10">
         <Link href="/" className="inline-flex min-h-16 items-center focus-ring" onClick={() => setOpen(false)}>
           <Logo />
         </Link>
-        <div className="hidden flex-1 items-center gap-5 text-[0.9375rem] font-medium md:flex lg:gap-7">
+        <div className="hidden flex-1 items-center gap-5 whitespace-nowrap text-[0.9375rem] font-medium lg:flex xl:gap-7">
           {LINKS.map((l) => (
             <Link
               key={l.href}
@@ -74,14 +75,14 @@ export default function Nav() {
           href={REPO}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto hidden min-h-11 items-center gap-2 border border-ink px-4 text-[0.9375rem] font-medium hover:bg-ink hover:text-paper focus-ring md:inline-flex"
+          className="ml-auto hidden min-h-11 items-center gap-2 border border-ink px-4 text-[0.9375rem] font-medium hover:bg-ink hover:text-paper focus-ring lg:inline-flex"
         >
           <CodeIcon />
           GitHub
         </a>
         <button
           type="button"
-          className="ml-auto inline-flex h-11 w-11 items-center justify-center border border-ink focus-ring md:hidden"
+          className="ml-auto inline-flex h-11 w-11 items-center justify-center border border-ink focus-ring lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -101,7 +102,7 @@ export default function Nav() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
-            className="overflow-hidden border-t border-ink md:hidden"
+            className="overflow-hidden border-t border-ink lg:hidden"
           >
             <ul className="flex flex-col px-4 py-2">
               {[...LINKS, { href: REPO, label: "GitHub" }].map((l, i) => {
