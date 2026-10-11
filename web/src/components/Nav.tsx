@@ -43,11 +43,11 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-ink bg-paper">
-      <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-10 px-4 sm:px-6">
+      <nav aria-label="Main" className="mx-auto flex max-w-7xl items-center gap-6 px-4 sm:px-6 lg:gap-10">
         <Link href="/" className="inline-flex min-h-16 items-center focus-ring" onClick={() => setOpen(false)}>
           <Logo />
         </Link>
-        <div className="hidden flex-1 items-center gap-7 text-[0.9375rem] font-medium md:flex">
+        <div className="hidden flex-1 items-center gap-5 text-[0.9375rem] font-medium md:flex lg:gap-7">
           {LINKS.map((l) => (
             <Link
               key={l.href}
