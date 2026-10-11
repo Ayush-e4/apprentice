@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS memory (
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     embedding TEXT,
-    trace_id INTEGER
+    trace_id INTEGER,
+    scope TEXT
 );
 CREATE TABLE IF NOT EXISTS eval_runs (
     id INTEGER PRIMARY KEY,
@@ -72,6 +73,12 @@ class Database:
         columns = {r[1] for r in self._conn.execute("PRAGMA table_info(traces)")}
         if "check_score" not in columns:
             self._conn.execute("ALTER TABLE traces ADD COLUMN check_score REAL")
+            self._conn.commit()
+        # Memory is scoped by system prompt (memory.scope_of). Rows from before that have
+        # scope NULL until memory.backfill_scopes, run at gateway startup, fills them in.
+        columns = {r[1] for r in self._conn.execute("PRAGMA table_info(memory)")}
+        if "scope" not in columns:
+            self._conn.execute("ALTER TABLE memory ADD COLUMN scope TEXT")
             self._conn.commit()
 
     def execute(self, sql: str, params: tuple = ()) -> int:

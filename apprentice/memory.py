@@ -2,8 +2,14 @@
 
 Uses an embedding endpoint when one is configured and reachable, and falls back
 to lexical (bag-of-words cosine) similarity otherwise.
+
+Memory is scoped by the request's system prompt: an answer remembered for one app
+is only ever an example for requests with the same system prompt (or the same
+explicit `scope` option), never for another app sharing the gateway.
 """
 
+import functools
+import hashlib
 import json
 import math
 import re
@@ -19,6 +25,44 @@ from .db import Database
 from .providers import embed
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
+
+NO_SYSTEM = "none"  # the scope of requests without a system message
+
+
+def scope_of(system: str) -> str:
+    """A short stable id for a system prompt: the first 16 hex chars of its sha256."""
+    if not system:
+        return NO_SYSTEM
+    return hashlib.sha256(system.encode("utf-8")).hexdigest()[:16]
+
+
+@functools.cache
+def legacy_scopes() -> tuple[dict[str, str], str]:
+    """Scopes for memory saved before scoping: by trace tag, and the default for every other row.
+
+    Before scoping, only two apps wrote memory: the support demo (traces tagged "support")
+    and Kirana Copilot / the benchmark, which share the SQL system prompt.
+    """
+    from bench.questions import SYSTEM_PROMPT as SQL_PROMPT
+
+    from .support.knowledge import SYSTEM_PROMPT as SUPPORT_PROMPT
+
+    return {"support": scope_of(SUPPORT_PROMPT)}, scope_of(SQL_PROMPT)
+
+
+def backfill_scopes(db: Database) -> int:
+    """Give rows without a scope the scope of the app that created them. Idempotent; returns rows updated."""
+    pending = db.scalar("SELECT COUNT(*) FROM memory WHERE scope IS NULL") or 0
+    if not pending:
+        return 0
+    by_tag, default = legacy_scopes()
+    for tag, scope in by_tag.items():
+        db.execute(
+            "UPDATE memory SET scope = ? WHERE scope IS NULL AND trace_id IN (SELECT id FROM traces WHERE tag = ?)",
+            (scope, tag),
+        )
+    db.execute("UPDATE memory SET scope = ? WHERE scope IS NULL", (default,))
+    return pending
 
 
 @dataclass
@@ -58,15 +102,23 @@ class Memory:
         except (httpx.HTTPError, KeyError, IndexError, ValueError):
             return None
 
-    async def add(self, question: str, answer: str, trace_id: int | None = None) -> None:
+    async def add(self, question: str, answer: str, trace_id: int | None = None, scope: str = NO_SYSTEM) -> None:
         vector = await self._embed(question)
         self.db.execute(
-            "INSERT INTO memory (ts, question, answer, embedding, trace_id) VALUES (?, ?, ?, ?, ?)",
-            (time.time(), question, answer, json.dumps(vector) if vector else None, trace_id),
+            "INSERT INTO memory (ts, question, answer, embedding, trace_id, scope) VALUES (?, ?, ?, ?, ?, ?)",
+            (time.time(), question, answer, json.dumps(vector) if vector else None, trace_id, scope),
         )
 
-    async def search(self, question: str, k: int) -> list[Hit]:
-        rows = self.db.query("SELECT id, question, answer, embedding FROM memory")
+    async def search(self, question: str, k: int, scope: str = NO_SYSTEM) -> list[Hit]:
+        """The k most similar remembered questions in this scope.
+
+        Rows that still have no scope (made before scoping and not yet backfilled) are
+        treated as SQL memory, the default in backfill_scopes, so they never reach another app.
+        """
+        sql = "SELECT id, question, answer, embedding FROM memory WHERE scope = ?"
+        if scope == legacy_scopes()[1]:
+            sql += " OR scope IS NULL"
+        rows = self.db.query(sql, (scope,))
         if not rows:
             return []
         q_vec = await self._embed(question)

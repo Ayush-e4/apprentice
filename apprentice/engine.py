@@ -22,7 +22,7 @@ from .config import Settings
 from .db import Database
 from .judges import SQL_STATEMENT, TEXT_STATEMENT, JudgeError, sql_state, systemone_check, text_state
 from .llm_judge import llm_check
-from .memory import Hit, Memory
+from .memory import Hit, Memory, scope_of
 from .providers import Completion, ProviderError, chat
 from .verifiers import preview_sql, verify_sql
 
@@ -38,6 +38,7 @@ class Options:
     verifier: str | None = None
     judge: str | None = None
     tag: str | None = None
+    scope: str | None = None  # memory scope; default: a hash of the system messages (memory.scope_of)
 
 
 @dataclass
@@ -153,10 +154,11 @@ class Engine:
             raise ValueError(f"judge must be one of {JUDGES}")
         started = time.perf_counter()
         question = last_user_text(messages)
+        scope = opts.scope or scope_of(system_text(messages))
 
         hits: list[Hit] = []
         if opts.use_memory and opts.mode != "teacher":
-            hits = await self.memory.search(question, self.s.memory_k)
+            hits = await self.memory.search(question, self.s.memory_k, scope)
         top_sim = hits[0].sim if hits else 0.0
         relevant = [h for h in hits if h.sim >= self.s.memory_min_sim]
 
@@ -219,7 +221,7 @@ class Engine:
             if opts.verifier:
                 keep, _ = self._verify(opts.verifier, final.content)
             if keep:
-                await self.memory.add(question, final.content, trace_id)
+                await self.memory.add(question, final.content, trace_id, scope)
 
         return Result(
             content=final.content,
