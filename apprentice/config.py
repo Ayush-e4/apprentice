@@ -67,6 +67,8 @@ class Settings:
     memory_min_sim: float
     student_no_think: bool
     timeout_s: float
+    judge: Endpoint | None
+    judge_threshold: float
 
 
 def load_settings() -> Settings:
@@ -80,6 +82,9 @@ def load_settings() -> Settings:
         memory_min_sim=_float("MEMORY_MIN_SIM", 0.55),
         student_no_think=os.getenv("STUDENT_NO_THINK", "1") == "1",
         timeout_s=_float("REQUEST_TIMEOUT_S", 120.0),
+        # Decision judge: any server speaking the /v1/systemone protocol (Von, Kev, Jev)
+        judge=_endpoint("JUDGE", "judge"),
+        judge_threshold=_float("JUDGE_THRESHOLD", 0.8),
     )
 
 

@@ -10,6 +10,7 @@ IDEAS.md
 __pycache__/
 *.py[cod]
 .venv/
+.venv-judge/
 venv/
 *.egg-info/
 .pytest_cache/

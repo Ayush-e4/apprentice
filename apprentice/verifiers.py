@@ -32,6 +32,23 @@ def run_sql(db_path: Path, sql: str, timeout_s: float = 5.0, max_rows: int = 100
         conn.close()
 
 
+def preview_sql(db_path: Path, text: str, n: int = 5) -> dict:
+    """The query and the first rows it returns, for showing to a judge."""
+    sql = extract_sql(text)
+    conn = sqlite3.connect(f"file:{db_path.as_posix()}?mode=ro", uri=True)
+    try:
+        cur = conn.execute(sql)
+        return {
+            "sql": sql,
+            "result_columns": [d[0] for d in cur.description or []],
+            "result_rows": cur.fetchmany(n),
+        }
+    except sqlite3.Error as e:
+        return {"sql": sql, "error": str(e)}
+    finally:
+        conn.close()
+
+
 def verify_sql(db_path: Path, text: str) -> tuple[bool, str]:
     sql = extract_sql(text)
     if not sql:

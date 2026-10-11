@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS traces (
     latency_ms REAL,
     memory_hits INTEGER,
     top_sim REAL,
-    tag TEXT
+    tag TEXT,
+    check_score REAL
 );
 CREATE TABLE IF NOT EXISTS memory (
     id INTEGER PRIMARY KEY,
@@ -64,7 +65,14 @@ class Database:
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.executescript(SCHEMA)
+        self._migrate()
         self._lock = threading.Lock()
+
+    def _migrate(self) -> None:
+        columns = {r[1] for r in self._conn.execute("PRAGMA table_info(traces)")}
+        if "check_score" not in columns:
+            self._conn.execute("ALTER TABLE traces ADD COLUMN check_score REAL")
+            self._conn.commit()
 
     def execute(self, sql: str, params: tuple = ()) -> int:
         with self._lock:
