@@ -3,6 +3,7 @@
 Reads data/unseen/judge.jsonl (built by `python -m bench.unseen build`), asks the
 judge configured by JUDGE_* about each example, and compares its verdict with the
 execution-based label. Run:  python -m bench.unseen judge
+Any other judge file:  python -m bench.judge_data_v2 eval --file <jsonl>
 """
 
 import asyncio
@@ -63,6 +64,7 @@ async def score(
     threshold: float | None = None,
     concurrency: int = 4,
     out: Path | None = None,
+    label: str = "unseen",
 ) -> dict:
     from .unseen import RESULTS_PATH
 
@@ -86,7 +88,7 @@ async def score(
                 print(f"\n  judge error: {e}")
                 result = None
         done += 1
-        print(f"\r  unseen:judge {done}/{len(examples)}", end="", flush=True)
+        print(f"\r  {label}:judge {done}/{len(examples)}", end="", flush=True)
         return result
 
     try:
