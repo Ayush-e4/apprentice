@@ -84,7 +84,7 @@ Each run is stored in the `eval_runs` and `eval_results` tables and shows up on 
 
 ### Limits
 
-- **In-distribution.** Test questions come from the same 16 templates as the training questions, with different parameters. This is the case Apprentice targets (repeated, similar requests), but it says nothing about unrelated questions.
+- **In-distribution.** Test questions come from the same 16 templates as the training questions, with different parameters. This is the case Apprentice targets (repeated, similar requests), but it says nothing about unrelated questions. [generalization.md](generalization.md) measures the student and the judge on 8 question types they have never seen.
 - **Synthetic data.** The database is generated, small, and clean.
 - **One run.** The numbers come from a single run of each phase. Expect some variation between runs and machines.
 - **A small memory.** Memory held only 6 entries after the warm-up. Most warm-up answers passed the SQL check and were never escalated, so the teacher was asked only a few times. Some of those student answers were wrong (warm-up accuracy was 78%), which is the gap a judge is meant to close.
