@@ -79,7 +79,9 @@ Or check a project-scoped `.mcp.json` into your own project (Claude Desktop's `c
 }
 ```
 
-On Windows, use the venv's `python.exe` and escaped backslashes:
+**Claude Desktop on Windows, the easy way:** quit Claude Desktop completely (system tray > Quit), then run `powershell -ExecutionPolicy Bypass -File scripts\claude-desktop-mcp.ps1` from the repo root and start Claude again. The script adds only the `apprentice` entry, with the right paths for this checkout, keeps the rest of the config, and saves a backup first. Claude must be closed: it rewrites its config while running and can drop an entry added in the meantime.
+
+On Windows, by hand, use the venv's `python.exe` and escaped backslashes:
 
 ```json
 {
