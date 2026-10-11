@@ -106,6 +106,8 @@ python -m bench.run_eval all --limit 5   # a quick smoke test on 5 questions per
 
 Results appear on the dashboard as each run finishes.
 
+For a customer-support demo, where repeated questions move from the teacher to the student, open <http://localhost:8000/support>; see [docs/support-demo.md](docs/support-demo.md).
+
 ## Per-request options
 
 Put options in an `apprentice` object in the request body, or send them as `X-Apprentice-<Option>` headers (for example `X-Apprentice-Mode: student`).
