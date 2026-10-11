@@ -50,12 +50,15 @@ async def llm_check(
     threshold: float,
     state: dict,
     statement: str,
-    max_tokens: int = 512,
+    max_tokens: int = 1024,
     timeout_s: float = 60.0,
 ) -> Verdict:
     started = time.perf_counter()
     try:
-        c = await chat(client, [ep], judge_messages(state, statement), max_tokens=max_tokens, timeout_s=timeout_s)
+        # no_think: a one-word verdict doesn't need a reasoning trace, and a long one can crowd out the answer
+        c = await chat(
+            client, [ep], judge_messages(state, statement), max_tokens=max_tokens, no_think=True, timeout_s=timeout_s
+        )
     except ProviderError as e:
         raise JudgeError(str(e)) from e
     score = parse_verdict(c.content)
