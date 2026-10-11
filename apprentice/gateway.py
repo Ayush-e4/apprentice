@@ -14,6 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from .config import settings
 from .db import Database
 from .engine import MODES, Engine, Options
+from .health import router as health_router
 from .providers import ProviderError
 from .shop import router as shop_router
 from .support import router as support_router
@@ -38,6 +39,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Apprentice", lifespan=lifespan)
 app.include_router(shop_router)
 app.include_router(support_router)
+app.include_router(health_router)
 
 
 def _error(status: int, message: str, kind: str) -> JSONResponse:

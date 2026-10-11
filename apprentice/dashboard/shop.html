@@ -60,6 +60,7 @@
     <h1>Kirana Copilot</h1>
     <span class="muted">Ask about your stores' sales, in English or Hinglish.</span>
     <a href="/">Apprentice dashboard →</a>
+    <span id="health" class="muted" style="width:100%;font-size:12px"></span>
   </header>
   <p class="muted" style="margin:6px 0 0;font-size:13px">A small open model on this laptop answers first. A trained judge checks it, and a large open model steps in only when needed and teaches the small one.</p>
 
@@ -146,6 +147,9 @@ async function ask(question) {
 }
 
 $("ask").addEventListener("submit", e => { e.preventDefault(); const q = $("q").value; $("q").value = ""; ask(q); });
+const healthScript = document.createElement("script");
+healthScript.src = "/health.js";
+document.body.appendChild(healthScript);
 fetch("/api/shop/examples").then(r => r.json()).then(d => {
   $("chips").innerHTML = d.examples.map(q => `<button class="chip" type="button">${esc(q)}</button>`).join("");
   $("chips").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => ask(b.textContent)));
