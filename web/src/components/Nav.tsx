@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/kirana", label: "Kirana Copilot" },
   { href: "/support", label: "QuickBite Support" },
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/guide", label: "Guide" },
 ];
 
 const REPO = "https://github.com/Ayush-e4/apprentice";

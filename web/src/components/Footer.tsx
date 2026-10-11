@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const REPO = "https://github.com/Ayush-e4/apprentice";
 
 const MODELS = ["Qwen3 1.7B — Apache-2.0", "GLM-5.2 — MIT", "Kev-0.8B — Apache-2.0"];
@@ -25,6 +27,9 @@ export default function Footer() {
           <a href={REPO} className="inline-flex min-h-11 items-center underline-offset-4 hover:text-local hover:underline focus-ring">
             github.com/Ayush-e4/apprentice
           </a>
+          <Link href="/guide" className="inline-flex min-h-11 items-center underline-offset-4 hover:text-local hover:underline focus-ring">
+            Developer guide
+          </Link>
         </div>
       </div>
     </footer>

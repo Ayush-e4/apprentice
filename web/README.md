@@ -26,9 +26,12 @@ server side, so there is no CORS to set up. Copy `.env.example` to `.env.local`,
 |---|---|---|
 | `APPRENTICE_URL` | `http://localhost:8000` | Main gateway: Kirana Copilot, `/api/stats`, `/api/traces`, `/api/evals`, `/api/health` |
 | `SUPPORT_URL` | `http://localhost:8001` | Gateway serving the QuickBite support demo (`/api/support/*`), with its own memory |
+| `PUBLIC_GATEWAY_URL` | unset | Public gateway URL shown on `/guide` and filled into its MCP commands and configs |
 
-Both can point at the same gateway. The values are read when the dev server starts (or at build time), so restart
-after changing them.
+Both gateway URLs can point at the same gateway. They are read when the dev server starts (or at build time), so
+restart after changing them. `PUBLIC_GATEWAY_URL` is different: `/api/guide-config` reads it on every request, so a
+restart of `npm start` is enough, no rebuild. When it is set, `/guide` shows it as the "Live demo gateway"; when it is
+unset, the guide uses `http://localhost:8000` and tells readers to put in their own gateway's URL.
 
 PowerShell example against a gateway on port 8080:
 
@@ -43,6 +46,7 @@ $env:APPRENTICE_URL="http://localhost:8080"; $env:SUPPORT_URL="http://localhost:
 | `/` | The one-line pitch, an animated student → judge → teacher → memory diagram, the benchmark's headline numbers, live gateway stats (requests, share answered locally, cost, memory size, a strip of who answered each recent request) and links to the two apps. |
 | `/kirana` | **Kirana Copilot.** A chat for a shop owner, in English or Hinglish. Example chips come from `/api/shop/examples`. Each answer is a big number or a table, with a badge (blue "Answered locally" with a filled square, or orange "Teacher" with an outlined triangle), judge score, time, cost, remembered examples and a collapsible "Why + SQL". Session totals sit at the top. |
 | `/support` | **QuickBite Support** (a fictional food-delivery brand). A customer chat with message bubbles, example chips and the same badge on each answer. "Simulate 30 customers" replays the built-in questions one by one with a live student-share bar and sparkline. "Reset memory" clears this demo's traces and memory. |
+| `/guide` | **Developer guide.** What Apprentice is, connecting it to Claude Code, Claude Desktop or Cursor through MCP (uv + `uvx`, no clone), calling it with the OpenAI SDK or curl, running your own gateway, training a judge, troubleshooting and links. Code blocks have Copy buttons. |
 | `/dashboard` | Live stats, the benchmark runs from `/api/evals` as a table and an accuracy vs student-share bar chart, live requests from `/api/traces` (polled every 3 s), and health dots per model when the gateway has `/api/health`. |
 
 Every page shows a loading state, and a clear "Gateway not reachable at …" message when the gateway is down. The layout
