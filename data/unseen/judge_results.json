@@ -1,0 +1,19 @@
+{
+  "n": 419,
+  "errors": 0,
+  "threshold": 0.8,
+  "accuracy": 0.7685,
+  "precision": 0.7711,
+  "recall": 0.6845,
+  "confusion": {
+    "tp": 128,
+    "fp": 38,
+    "fn": 59,
+    "tn": 194
+  },
+  "mean_score_correct": 0.7284,
+  "mean_score_wrong": 0.1774,
+  "wrong_above_threshold": 38,
+  "wrong_total": 232,
+  "judge_model": "kev-sql-judge"
+}
