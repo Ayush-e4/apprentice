@@ -8,6 +8,12 @@
 
 Apprentice is an OpenAI-compatible gateway. You point your app at it instead of a model provider, and it decides, request by request, whether a small local model can answer or a large hosted one has to.
 
+## Watch the 2-minute explainer
+
+[![Apprentice explained in 2 minutes: the student answers first, a fine-tuned judge checks it, the teacher steps in when needed, and memory makes the student better](docs/video/thumbnail.png)](docs/video/apprentice-explainer.mp4)
+
+Click the image to play. It covers how a request moves through the student, judge, teacher and memory, and the measured results below. Narrated with [Kokoro](https://github.com/thewh1teagle/kokoro-onnx) (open-weight TTS) and animated with Remotion and GSAP.
+
 ## The problem
 
 Most apps send every request to a frontier model and pay frontier prices for it, even when the request is one they have answered a hundred times before. Small open-weight models are cheap enough to run on a laptop, but on their own they get too many answers wrong to be trusted. Apprentice puts the small model first, checks its work, and calls the large model only when the check fails.
