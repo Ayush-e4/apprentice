@@ -1,24 +1,40 @@
 @import "tailwindcss";
 
+/*
+ * Design B, "Swiss Instrument": white ground, black 1px rules, one blue for "answered locally"
+ * and one burnt orange for "teacher". Light only: there is deliberately no dark theme.
+ */
 :root {
-  --background: #f7f7fb;
-  --foreground: #18181b;
+  --ink: #0a0a0a;
+  --paper: #ffffff;
+  --body: #262626;
+  --soft: #404040;
+  --muted: #525252;
+  --rule: #e5e5e5;
+  --rule-strong: #d4d4d4;
+  --wash: #f5f5f5;
+  --local: #1f4bff;
+  --teacher: #b54708;
+  --ok: #15803d;
+  --bad: #b42318;
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
-    color-scheme: dark;
-  }
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "Cascadia Code", Menlo, Consolas, monospace;
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-body: var(--body);
+  --color-soft: var(--soft);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-wash: var(--wash);
+  --color-local: var(--local);
+  --color-teacher: var(--teacher);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
 }
 
 html {
@@ -26,106 +42,143 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--local);
+  color: var(--paper);
 }
 
 @utility focus-ring {
   outline: none;
   &:focus-visible {
-    outline: 2px solid var(--color-indigo-500);
+    outline: 2px solid var(--local);
     outline-offset: 2px;
   }
 }
 
+/* Square buttons, 48px tall: the primary one is the "local" blue, the secondary one is solid ink. */
 @utility btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.75rem;
-  padding: 0.55rem 1rem;
-  font-size: 0.875rem;
+  gap: 0.625rem;
+  min-height: 48px;
+  padding: 0 1.25rem;
+  font-size: 0.9375rem;
   font-weight: 600;
-  transition: background-color 150ms, color 150ms, box-shadow 150ms, opacity 150ms;
+  border: 1px solid transparent;
+  transition: background-color 150ms, color 150ms, border-color 150ms, opacity 150ms;
   outline: none;
   &:focus-visible {
-    outline: 2px solid var(--color-indigo-500);
+    outline: 2px solid var(--local);
     outline-offset: 2px;
   }
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.45;
     cursor: not-allowed;
   }
 }
 
 @utility btn-primary {
-  background: var(--color-indigo-600);
-  color: white;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  background: var(--local);
+  border-color: var(--local);
+  color: var(--paper);
   &:hover:not(:disabled) {
-    background: var(--color-indigo-500);
+    background: #1638d6;
+    border-color: #1638d6;
+  }
+}
+
+@utility btn-ink {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  &:hover:not(:disabled) {
+    background: #262626;
+  }
+}
+
+@utility btn-outline {
+  background: var(--paper);
+  border-color: var(--ink);
+  color: var(--ink);
+  &:hover:not(:disabled) {
+    background: var(--wash);
   }
 }
 
 @utility btn-ghost {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  border-radius: 0.6rem;
-  padding: 0.45rem 0.7rem;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-zinc-600);
+  color: var(--soft);
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
   outline: none;
   &:hover:not(:disabled) {
-    background: color-mix(in oklab, var(--color-zinc-500) 12%, transparent);
+    color: var(--ink);
+    border-color: var(--ink);
   }
   &:focus-visible {
-    outline: 2px solid var(--color-indigo-500);
+    outline: 2px solid var(--local);
     outline-offset: 2px;
   }
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.45;
     cursor: not-allowed;
   }
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-zinc-300);
-  }
 }
 
-/* Animated packets on the overview diagram. */
-@keyframes dash-flow {
-  to {
-    stroke-dashoffset: -24;
-  }
+/* Mono labels: Geist Mono, small, set in capitals like an instrument panel. */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-.flow-line {
-  stroke-dasharray: 6 6;
-  animation: dash-flow 1s linear infinite;
-}
-
-@keyframes pulse-soft {
+@keyframes blink-soft {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.55;
+    opacity: 0.35;
   }
 }
 
-.pulse-soft {
-  animation: pulse-soft 2.4s ease-in-out infinite;
+.blink-soft {
+  animation: blink-soft 2s steps(2, jump-none) infinite;
 }
 
-@keyframes rise-in {
+@keyframes dot-step {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.dot-step {
+  animation: dot-step 1s ease-in-out infinite;
+}
+
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -133,16 +186,17 @@ body {
   }
 }
 
-.rise-in {
-  animation: rise-in 240ms ease-out both;
+.rise {
+  animation: rise 600ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flow-line,
-  .pulse-soft,
-  .rise-in,
-  .animate-bounce,
-  .animate-pulse {
-    animation: none !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

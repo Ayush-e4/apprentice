@@ -1,37 +1,36 @@
-// A single number with a label and an optional note. Used for headline and live stats.
+// A single number with a label and an optional note. Meant to sit in a StatGrid, whose 1px gaps
+// draw the black rules between cells.
 
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
-const ACCENTS = {
-  indigo: "from-indigo-500/10 text-indigo-600 dark:text-indigo-400",
-  emerald: "from-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  violet: "from-violet-500/10 text-violet-600 dark:text-violet-400",
-  sky: "from-sky-500/10 text-sky-600 dark:text-sky-400",
-  amber: "from-amber-500/10 text-amber-600 dark:text-amber-400",
-} as const;
+const TONES = { ink: "text-ink", local: "text-local", teacher: "text-teacher" } as const;
+export type Tone = keyof typeof TONES;
 
-export type Accent = keyof typeof ACCENTS;
+export function StatGrid({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={cn("grid grid-cols-2 gap-px border border-ink bg-ink lg:grid-cols-4", className)}>{children}</div>
+  );
+}
 
 export default function StatCard({
   label,
   value,
   note,
-  accent = "indigo",
+  tone = "ink",
   children,
 }: {
   label: string;
   value: ReactNode;
   note?: ReactNode;
-  accent?: Accent;
+  tone?: Tone;
   children?: ReactNode;
 }) {
   return (
-    <div
-      className={`relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white bg-gradient-to-br to-transparent p-4 shadow-sm shadow-zinc-900/5 sm:p-5 dark:border-zinc-800 dark:bg-zinc-900 ${ACCENTS[accent]}`}
-    >
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1.5 text-2xl font-bold tabular-nums tracking-tight sm:text-3xl">{value}</p>
-      {note && <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{note}</p>}
+    <div className="flex min-w-0 flex-col gap-2 bg-paper p-4 sm:p-5">
+      <p className="text-[0.8125rem] text-muted">{label}</p>
+      <p className={cn("text-[2rem] font-bold leading-none tracking-[-0.04em] tabular-nums sm:text-[2.5rem]", TONES[tone])}>{value}</p>
+      {note && <p className="text-[0.8125rem] leading-snug text-muted">{note}</p>}
       {children}
     </div>
   );

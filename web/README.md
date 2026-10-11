@@ -41,22 +41,36 @@ $env:APPRENTICE_URL="http://localhost:8080"; $env:SUPPORT_URL="http://localhost:
 | Page | What it shows |
 |---|---|
 | `/` | The one-line pitch, an animated student → judge → teacher → memory diagram, the benchmark's headline numbers, live gateway stats (requests, share answered locally, cost, memory size, a strip of who answered each recent request) and links to the two apps. |
-| `/kirana` | **Kirana Copilot.** A chat for a shop owner, in English or Hinglish. Example chips come from `/api/shop/examples`. Each answer is a big number or a table, with a badge (green "Answered locally" or purple "Teacher"), judge score, time, cost, remembered examples and a collapsible "Why + SQL". Session totals sit at the top. |
+| `/kirana` | **Kirana Copilot.** A chat for a shop owner, in English or Hinglish. Example chips come from `/api/shop/examples`. Each answer is a big number or a table, with a badge (blue "Answered locally" with a filled square, or orange "Teacher" with an outlined triangle), judge score, time, cost, remembered examples and a collapsible "Why + SQL". Session totals sit at the top. |
 | `/support` | **QuickBite Support** (a fictional food-delivery brand). A customer chat with message bubbles, example chips and the same badge on each answer. "Simulate 30 customers" replays the built-in questions one by one with a live student-share bar and sparkline. "Reset memory" clears this demo's traces and memory. |
 | `/dashboard` | Live stats, the benchmark runs from `/api/evals` as a table and an accuracy vs student-share bar chart, live requests from `/api/traces` (polled every 3 s), and health dots per model when the gateway has `/api/health`. |
 
-Every page shows a loading state, and a clear "Gateway not reachable at …" message when the gateway is down. Light and
-dark mode follow the system setting. The layout works down to 375 px wide.
+Every page shows a loading state, and a clear "Gateway not reachable at …" message when the gateway is down. The layout
+works down to 375 px wide.
+
+## Design
+
+Design B, "Swiss Instrument": a white ground, black 1 px rules and a 12-column grid, set in Schibsted Grotesk with Geist
+Mono for labels (both loaded with `next/font/google`). Electric blue `#1F4BFF` with a filled square means "answered
+locally"; burnt orange `#B54708` with an outlined triangle means "teacher", so status never relies on colour alone. The
+theme is light only. Colours are CSS variables in `src/app/globals.css`, exposed to Tailwind as `ink`, `muted`, `rule`,
+`local`, `teacher` and so on.
+
+Motion uses the [`motion`](https://motion.dev) package, plus four [Magic UI](https://magicui.design) components (MIT)
+copied into `src/components/magicui/`: Animated Beam (the "How it works" diagram), Number Ticker (headline results),
+Border Beam (the Kirana and QuickBite product windows) and Blur Fade (section reveals). `MotionConfig
+reducedMotion="user"` and `useReducedMotion()` turn movement off when the system asks for reduced motion.
 
 ## Layout of the code
 
 ```
 src/app/          pages (one folder per route) and the shared layout
-src/components/   UI, split by page: overview/, kirana/, support/, dashboard/, chat/ (shared chat parts)
-src/lib/          types.ts (API shapes), api.ts (fetch client), format.ts, usePoll.ts
+src/components/   UI, split by page: overview/, kirana/, support/, dashboard/, chat/ (shared chat parts), magicui/
+src/lib/          types.ts (API shapes), api.ts (fetch client), format.ts, usePoll.ts, utils.ts (cn)
 ```
 
-No chart or UI libraries: charts are inline SVG and styling is Tailwind CSS. Every file stays under 300 lines, which
+No chart or UI kits: charts are HTML and inline SVG, styling is Tailwind CSS, and the only runtime additions are
+`motion`, `clsx` and `tailwind-merge` (for the `cn()` helper in `src/lib/utils.ts`). Every file stays under 300 lines, which
 is why `package-lock.json` is not committed (it is gitignored; `npm install` creates it locally).
 
 ## Checks
