@@ -1,0 +1,387 @@
+{
+  "title": "Apprentice: how a small model learns from a big one",
+  "voice": "af_heart",
+  "totalSeconds": 120,
+  "palette": {
+    "ink": "#1F2328",
+    "paper": "#FAF8F3",
+    "student": "#2F9E6B",
+    "teacher": "#4C5BD4",
+    "judge": "#D99A00",
+    "memory": "#E8590C",
+    "error": "#D64545"
+  },
+  "scenes": [
+    {
+      "id": "cold-open-meter",
+      "type": "anim",
+      "narration": "Your app sends every question to a big AI model. Most are easy. You pay big-model prices anyway.",
+      "minSeconds": 8.5,
+      "visual": "Paper background, no title. LEFT (x 10%): the APP, a plain browser-window outline 220x160 px, ink stroke, tiny label 'app'. RIGHT (x 82%): the TEACHER, a tall indigo figure (rounded-rect body, circle head, no face details) behind a wide indigo desk; he is about twice the size of every other character in the film. One ROUTE joins them: a thin ink line with small round dots every 40 px. TOP-RIGHT corner: the COST METER, a small taxi-meter box with an amber frame and rolling ink drum digits starting at '$0.000'. REQUEST CARDS (white index cards 120x80, ink outline, three squiggle lines for the question) are already travelling at frame 0.",
+      "beats": [
+        "0.0-0.3 s music only; three request cards already sliding app -> teacher; the first one is lettered 'today's sales?'.",
+        "on \"every question\": the stream doubles; a card now leaves the app every 0.4 s.",
+        "on \"big A I model\": camera eases 10% toward the teacher so his size reads against the small cards.",
+        "on \"Most are easy\": as cards pass the midpoint, a tiny green 'easy' tag pops onto 8 of every 10; the other 2 stay untagged.",
+        "on \"big-model prices\": every card, tagged or not, still lands on the teacher's desk; the meter drums spin faster and the single click becomes a rattle.",
+        "on \"anyway\": 6-frame hold on one 'easy' card sitting on the giant desk while the meter keeps rolling."
+      ],
+      "onScreenText": [
+        "app",
+        "easy",
+        "$0.000"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "enter-apprentice",
+      "type": "anim",
+      "narration": "What if a small model took the easy ones, and learned the hard ones? That's Apprentice: an open-source gateway that speaks the OpenAI API.",
+      "minSeconds": 10,
+      "visual": "Same wide layout as the cold open: app left, teacher right, route between, meter top-right. A STUDENT desk is drawn into the middle of the route at x 38%. A dashed 'hosted' line (vertical, light ink dashes) appears at x 70%, separating the teacher from everything else.",
+      "beats": [
+        "on \"small model\": an ink line draws a small green desk on the route at x 38%; a small green figure (same body shapes as the teacher, half his height) sits down at a laptop.",
+        "on \"easy ones\": the route forks at the desk; every card with a green 'easy' tag peels off to the student, gets green scribbles, and goes back to the app; the meter's rattle slows to occasional clicks.",
+        "on \"learned the hard ones\": an untagged card continues to the teacher; a dotted line traces from the teacher's desk back to the student's desk, and the student turns to watch.",
+        "final beat: the app's route detaches from the teacher and snaps to a small port on the box edge labelled 'OpenAI API'"
+      ],
+      "onScreenText": [
+        "Apprentice",
+        "OpenAI API",
+        "hosted"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "broll-one-url",
+      "type": "broll",
+      "narration": "Change one base URL, and your app never knows.",
+      "minSeconds": 4.0,
+      "visual": "A light-theme code editor framed by a simple ink-drawn window on the paper (70% of frame width, centered, thin ink border, no shadow, no gradient).",
+      "beats": [
+        "on \"Change one base U R L\": the old value 'https://api.openai.com/v1' is selected and replaced by typing 'http://localhost:8000/v1'.",
+        "on \"never knows\": hold; every other line in the file is unchanged."
+      ],
+      "onScreenText": [],
+      "broll": {
+        "source": "code",
+        "show": "A Python file in a light editor theme with the README's client setup: `from openai import OpenAI` and `client = OpenAI(base_url=\"http://localhost:8000/v1\", api_key=\"unused\")`. Record it as a tiny live edit: cursor selects `https://api.openai.com/v1` inside base_url and types `http://localhost:8000/v1`. Nothing else in the file changes. Font size large enough to read at 1080p.",
+        "camera": "slow push-in (100% to 112%) centered on the base_url argument, ending tight on 'localhost:8000'."
+      },
+      "transition": "cut"
+    },
+    {
+      "id": "student-desk",
+      "type": "anim",
+      "narration": "First stop, the student: Kwen three, one point seven billion parameters, running on your machine through Ollama. Its answers cost nothing per token.",
+      "minSeconds": 8.5,
+      "visual": "Medium shot inside the dashed Apprentice box: the STUDENT desk fills the left 60% of frame. Green figure; laptop with a sticker 'Qwen3 1.7B' and a small 'Ollama' tag on the base. On the desk: a round stopwatch and a little toggle switch labelled 'thinking'. Cost meter small in the top-right corner. Right edge of frame: the dashed 'hosted' line, the teacher soft beyond it.",
+      "beats": [
+        "card lands on the desk",
+        "ink underline under the 'Qwen3 1.7B' sticker",
+        "'local' outline draws around desk",
+        "green lines are written; corner meter stays still",
+        "card returns to the app"
+      ],
+      "onScreenText": [
+        "Qwen3 1.7B",
+        "Ollama",
+        "local"
+      ],
+      "broll": null,
+      "transition": "continuous pan right along the route to the judge booth (no cut)"
+    },
+    {
+      "id": "judge-booth",
+      "type": "anim",
+      "narration": "Small models slip up, so a judge checks every answer. Meet Kev, a tiny open model.",
+      "minSeconds": 6,
+      "visual": "The pan lands on the JUDGE BOOTH at x 55% inside the Apprentice box: an amber podium with a small figure holding a magnifying glass. On the booth front, a semicircular DIAL GAUGE from 0 to 1 with a single notch at 0.8. A rubber stamp rests on the ledge.",
+      "beats": [
+        "on \"Small models slip up\": quick cut-in on the student's card: one of the green lines bends off course as it is written (the viewer sees it, the student does not).",
+        "on \"a judge checks every answer\": the card slides to the booth; the amber magnifier sweeps across each line, left to right; the bent line darkens under the lens.",
+        "on \"Kev\": a nameplate drops onto the booth with a small bounce: 'Kev 0.8B'.",
+        "on \"tiny open model\": the gauge needle twitches but does not settle (it pays off two scenes later)."
+      ],
+      "onScreenText": [
+        "Kev 0.8B",
+        "0",
+        "0.8",
+        "1"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "broll-colab",
+      "type": "broll",
+      "narration": "Fine-tuning on Colab took Kev from forty-six to ninety-nine percent accuracy.",
+      "minSeconds": 5,
+      "visual": "Ink-drawn browser frame on the paper, 72% of frame width, left-aligned. The right 25% of the frame is bare paper reserved for one hand-lettered amber annotation.",
+      "beats": [
+        "on \"fine-tuned on Colab\": the window settles; the training progress bar is moving.",
+        "on \"under half right\": in the paper margin, amber ink letters '45.7%'.",
+        "on \"ninety-nine percent\": an amber arrow draws from it to '99.3%', with a tiny 'held-out' label underneath."
+      ],
+      "onScreenText": [
+        "45.7%",
+        "99.3%",
+        "held-out"
+      ],
+      "broll": {
+        "source": "colab",
+        "show": "Google Colab in light theme with notebook train_sql_judge.ipynb open (file name readable in the tab/title). The fine-tuning cell is running: its progress bar advances and loss lines print under it. Do not edit or fake numbers inside the screen capture; the 45.7% -> 99.3% figures live only in the paper-margin annotation.",
+        "camera": "slow push-in on the progress bar and the log output below it."
+      },
+      "transition": "cut back to the judge booth"
+    },
+    {
+      "id": "judge-verdict",
+      "type": "anim",
+      "narration": "Kev scores its confidence. Zero point eight or higher, the answer goes straight back.",
+      "minSeconds": 6.5,
+      "visual": "Judge booth center frame; the dial gauge is large (about 30% of frame height). From the booth the route runs two ways: left back to the app, and right across the dashed 'hosted' line to the teacher.",
+      "beats": [
+        "on \"scores its confidence\": a fresh student card with all green lines straight sits under the magnifier; the needle swings and settles at 0.93; '0.93' prints on a small amber tab under the gauge.",
+        "on \"Zero point eight\": the 0.8 notch flashes amber twice.",
+        "on \"or higher\": the stamp lifts and thunks down: a green 'APPROVED' mark on the card, with a small paper shake.",
+        "on \"straight back\": the card zips left along the route to the app; the route segment it travels is re-inked green behind it."
+      ],
+      "onScreenText": [
+        "0.93",
+        "0.8",
+        "APPROVED"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "teacher-escalation",
+      "type": "anim",
+      "narration": "Lower, and it escalates to the teacher: G L M five point two, a big open-weight model.",
+      "minSeconds": 7,
+      "visual": "Same booth framing, then the camera follows the card right across the 'hosted' line to the indigo TEACHER desk (same tall figure as the cold open). Cost meter visible top-right throughout.",
+      "beats": [
+        "on \"Lower\": the card with the bent line goes under the glass; the needle settles at 0.41, left of the notch; the tab reads '0.41'; the stamp thunks a red 'REJECTED' mark.",
+        "on \"escalates to the teacher\": the card slides right; the dashed 'hosted' line lifts like a gate as it crosses; camera follows to the teacher.",
+        "on \"G L M five point two\": nameplate 'GLM-5.2' drops onto the desk with a small 'open weights' tag; the teacher writes clean indigo lines on a new card.",
+        "as the teacher finishes: the cost meter clicks exactly once, visibly (one drum step).",
+        "on \"open-weight model\": the indigo card heads back left toward the Apprentice box."
+      ],
+      "onScreenText": [
+        "0.41",
+        "UNSURE",
+        "GLM-5.2",
+        "open weights",
+        "hosted"
+      ],
+      "broll": null,
+      "transition": "continuous pan left following the indigo card back into the Apprentice box"
+    },
+    {
+      "id": "memory-file",
+      "type": "anim",
+      "narration": "The trick: every teacher answer goes into memory.",
+      "minSeconds": 3.8,
+      "visual": "Inside the Apprentice box, below the student desk, the previously empty slot fills: the MEMORY, an orange two-drawer filing cabinet, label 'memory', small side label 'SQLite + nomic-embed-text'.",
+      "beats": [
+        "on \"The trick\": the indigo card coming back from the teacher stops above the cabinet; a carbon copy peels off it (offset 6 px, then separates).",
+        "on \"every teacher answer\": a small orange stamp prints a row of 6 dots of different sizes along the copy's top edge: its fingerprint.",
+        "on \"into memory\": the top drawer slides open, the copy drops in with its tab sticking up, the drawer closes with a small bump; the original card continues to the app."
+      ],
+      "onScreenText": [
+        "memory",
+        "SQLite",
+        "nomic-embed-text"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "memory-recall",
+      "type": "anim",
+      "narration": "When a similar question arrives, the student gets that worked example and usually solves it alone.",
+      "minSeconds": 7,
+      "visual": "Wide view of the whole Apprentice box: student desk, judge booth, memory cabinet; teacher beyond the 'hosted' line at right; cost meter top-right.",
+      "beats": [
+        "on \"similar question\": a new request card arrives; its squiggles differ but the orange stamp gives it the same 6-dot fingerprint; the matching tab in the cabinet lifts and thin orange lines join dot to dot between the two.",
+        "on \"worked example\": the drawer opens and the indigo-inked card floats up and pins beside the student's laptop.",
+        "on \"solves it alone\": the student writes green lines following the pinned card; the card goes to the judge; needle settles at 0.91; green APPROVED; card returns to the app.",
+        "throughout: the teacher leans back idle and the cost meter does not move."
+      ],
+      "onScreenText": [
+        "0.91",
+        "APPROVED"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "flywheel",
+      "type": "anim",
+      "narration": "So the student takes more traffic over time, and the bill shrinks.",
+      "minSeconds": 4.8,
+      "visual": "Full-system wide shot, every element smaller: app left, Apprentice box center (student, judge, memory), teacher beyond the 'hosted' line right, cost meter top-right. Under the box, a thin horizontal bar labelled 'student' with a green fill.",
+      "beats": [
+        "on \"So\": time-lapse at 4x: cards stream through the system continuously.",
+        "the memory cabinet fills: tabs pile up; when two drawers are full a third drawer draws itself in.",
+        "on \"takes more traffic\": more and more cards turn back at the student desk; the green 'student' bar slides from about a quarter of its width to most of it; trips across the 'hosted' line become rare.",
+        "on \"the bill shrinks\": the cost meter's drum rolls slower and slower until it barely clicks."
+      ],
+      "onScreenText": [
+        "student"
+      ],
+      "broll": null,
+      "transition": "cut to the dashboard B-roll frame"
+    },
+    {
+      "id": "test-bench",
+      "type": "anim",
+      "narration": "We tested it on eighty held-out text-to-S Q L questions.",
+      "minSeconds": 4.5,
+      "visual": "A stack of 80 small question cards on the left feeds into the full stage; a tally board above the stage counts answered questions.",
+      "beats": [
+        "cards fan out from the stack into a 10x8 grid of small squares",
+        "on 'held-out': a dashed line separates them from the memory cabinet (never seen in training)"
+      ],
+      "onScreenText": [
+        "80 questions",
+        "held-out"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "results-accuracy",
+      "type": "anim",
+      "narration": "New student: twenty-five percent. Teacher: one hundred. Apprentice, after learning: ninety-seven and a half.",
+      "minSeconds": 7.5,
+      "visual": "Paper background, three horizontal lanes stacked. Each lane: a short label at left, then a grid of 80 small rounded squares (10 columns x 8 rows, 14 px, ink outlines), one square per held-out question, and a rolling percentage at the right end. Small label '80 questions' above the top grid.",
+      "beats": [
+        "lane 1: 20 green, 60 red outline -> 25%",
+        "lane 2: 80 indigo -> 100%",
+        "lane 3: 67 green, 11 indigo, 2 red outline -> 97.5% (78/80 correct)"
+      ],
+      "onScreenText": [
+        "80 questions",
+        "student, new",
+        "teacher",
+        "Apprentice",
+        "25%",
+        "100%",
+        "97.5%"
+      ],
+      "broll": null,
+      "transition": "lanes 1 and 2 slide away; lane 3 moves to center (continuous)"
+    },
+    {
+      "id": "results-cost",
+      "type": "anim",
+      "narration": "The student handled eighty-six percent of requests, and the bill was eighty-seven percent smaller than teacher-only.",
+      "minSeconds": 6.5,
+      "visual": "The Apprentice grid centered in the top half. Below it, two copies of the cost meter from the cold open, side by side: left labelled 'teacher only', right labelled 'Apprentice'.",
+      "beats": [
+        "green (67) + red (2) squares = 69 handled by the student slide into one block: 86%; 11 indigo into a smaller block",
+        "on \"the bill\": both meters start rolling at the same speed; the right meter clicks only while an indigo square lights up.",
+        "on \"eighty-seven percent smaller\": left meter stops at '$0.126', right meter at '$0.0165'; a bracket draws between them with '-87%'."
+      ],
+      "onScreenText": [
+        "86%",
+        "student",
+        "teacher only",
+        "Apprentice",
+        "$0.126",
+        "$0.0165",
+        "-87%"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "honest-limit",
+      "type": "anim",
+      "narration": "The catch: on question shapes it has never seen, Apprentice gets fifty-three percent, the student alone thirty-three. Memory works best on repeats.",
+      "minSeconds": 8.5,
+      "visual": "Back inside the Apprentice box, medium shot on the student desk and the memory cabinet; two short horizontal bars will draw on the right third of the frame.",
+      "beats": [
+        "on \"The catch\": a request card with a different silhouette arrives (clipped corners, almost hexagonal) and gets an unfamiliar dot fingerprint.",
+        "on \"never seen\": the drawer opens; orange lines try to join its dots to each tab and none line up; the drawer closes with nothing; the student tilts his head once.",
+        "on \"fifty-three percent\": bar 'Apprentice 53%' draws at right (ink outline, green and indigo fill).",
+        "on \"thirty-three\": bar 'student alone 33%' draws beneath it, green, shorter.",
+        "on \"works best on repeats\": a familiar rectangular card arrives; its dots snap to a tab instantly; the worked example pins up; quick green APPROVED."
+      ],
+      "onScreenText": [
+        "new shape",
+        "Apprentice",
+        "53%",
+        "student alone",
+        "33%"
+      ],
+      "broll": null,
+      "transition": "cut to the Kirana B-roll frame"
+    },
+    {
+      "id": "real-example",
+      "type": "anim",
+      "narration": "Real questions repeat. A shop owner asks, in Hinglish, which store had the most orders. The student answers alone, for free.",
+      "minSeconds": 8.5,
+      "visual": "Stage; the app is a shop counter chat. A card lettered 'March 2026 mein sabse zyada orders kis store pe aaye?' goes to the student; answer card 'Bandra Linking Road · 65 orders'; judge 0.96 APPROVED; meter stays $0.0000.",
+      "beats": [
+        "question card travels to the student",
+        "student writes; memory tab lifts (remembered 3)",
+        "judge needle 0.96, APPROVED",
+        "answer returns: 'Bandra Linking Road · 65 orders'"
+      ],
+      "onScreenText": [
+        "Bandra Linking Road",
+        "65 orders",
+        "0.96",
+        "$0.0000"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "use-cases",
+      "type": "anim",
+      "narration": "A support bot answering refund questions. When the student answers, your data never leaves your machine.",
+      "minSeconds": 8,
+      "visual": "Full-system wide shot again (same layout as the flywheel). The app slot at the left is redrawn in ink for each use case.",
+      "beats": [
+        "on \"support bot\": the app slot redraws as a chat window labelled 'QuickBite'; three cards tagged 'refund?' flow in: the first goes to the teacher and drops a copy into memory, the next two are answered by the student and approved.",
+        "on \"coding agent\": the slot redraws as a small terminal labelled 'agent'; a quick burst of about 20 tiny cards; nearly all turn at the student desk; the meter barely clicks.",
+        "on \"your data stays local\": a thin dashed outline labelled 'your machine' draws around the app slot and the whole Apprentice box; green cards circulate inside it while the route to the teacher fades to a faint dotted line."
+      ],
+      "onScreenText": [
+        "QuickBite",
+        "refund?",
+        "your machine"
+      ],
+      "broll": null,
+      "transition": "cut"
+    },
+    {
+      "id": "outro",
+      "type": "anim",
+      "narration": "Apprentice. Open source, open models, M I T licensed.",
+      "minSeconds": 5.0,
+      "visual": "The complete system from the whole film, then simplified: app, Apprentice box (student, judge, memory), teacher beyond the 'hosted' line, meter. It tidies into one compact row of small outlined icons with the name and repo URL lettered beneath.",
+      "beats": [
+        "on 'Apprentice': the whole stage scales to 55% and moves up; one last card runs the loop and gets APPROVED",
+        "on \"Open source, open models\": under the row, ink lettering 'Apprentice', and beneath it 'github.com/Ayush-e4/apprentice'.",
+        "on \"M I T licensed\": a small 'MIT' tag is lettered to the right of the URL.",
+        "final 2.5 s, music only: hold on the diagram and URL; the corner meter stays still; fade to plain paper."
+      ],
+      "onScreenText": [
+        "Apprentice",
+        "github.com/Ayush-e4/apprentice",
+        "MIT"
+      ],
+      "broll": null,
+      "transition": "fade to paper"
+    }
+  ],
+  "speed": 1.0
+}

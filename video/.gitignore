@@ -1,0 +1,7 @@
+node_modules/
+out/
+broll/
+public/voice/
+public/v2/voice/
+public/broll/
+public/music.wav

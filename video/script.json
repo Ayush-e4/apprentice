@@ -1,0 +1,21 @@
+{
+  "voice": "af_heart",
+  "speed": 1.05,
+  "fps": 30,
+  "padSeconds": 0.35,
+  "targetSeconds": 120,
+  "scenes": [
+    {"id": "hook", "text": "Most questions an AI app gets are easy, but every one of them goes to a big, expensive model. You pay big-model prices for small-model work."},
+    {"id": "intro", "text": "Meet Apprentice: an open-source gateway where small open models learn from big ones, so your app gets cheaper every day."},
+    {"id": "idea", "text": "Your app sends a normal OpenAI request. Apprentice gives it first to the student: Qwen three, a small open model running right on a laptop."},
+    {"id": "judge", "text": "A judge checks every answer. It's Kev, a small open model we fine-tuned to spot wrong answers, raising its accuracy from forty-six to ninety-nine percent."},
+    {"id": "teacher", "text": "If the judge isn't confident, the request goes up to the teacher, the large open model G L M five point two."},
+    {"id": "learn", "text": "Every teacher answer is saved to memory. When a similar question comes back, the student sees that example, and gets it right on its own."},
+    {"id": "results", "text": "On eighty held-out questions, the student alone scored twenty-five percent. After learning, Apprentice reached ninety-seven and a half percent accuracy, with eighty-six percent of requests on the small model, at eighty-seven percent lower cost than the teacher."},
+    {"id": "honest", "text": "On question types it has never seen, it scores fifty-three percent, versus thirty-three for the student alone. So the judge still matters."},
+    {"id": "usecases", "text": "It fits anywhere questions repeat: store analytics, customer support, Hinglish kirana orders, coding agents, and private data that should stay on your own machine."},
+    {"id": "open", "text": "Every model is open weight: Qwen three, G L M five point two, Kev, and Nomic embeddings."},
+    {"id": "use", "text": "Point your OpenAI client at Apprentice with one line, and watch the student take over."},
+    {"id": "close", "text": "Apprentice. Small models that learn from big ones. Built at Hacktoberfest, Mumbai."}
+  ]
+}

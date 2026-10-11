@@ -1,0 +1,102 @@
+{
+  "fps": 30,
+  "totalFrames": 3600,
+  "scenes": [
+    {
+      "id": "hook",
+      "text": "Most questions an AI app gets are easy, but every one of them goes to a big, expensive model. You pay big-model prices for small-model work.",
+      "from": 0,
+      "frames": 323,
+      "voiceDelay": 10,
+      "voiceSeconds": 9.152
+    },
+    {
+      "id": "intro",
+      "text": "Meet Apprentice: an open-source gateway where small open models learn from big ones, so your app gets cheaper every day.",
+      "from": 323,
+      "frames": 263,
+      "voiceDelay": 10,
+      "voiceSeconds": 7.168
+    },
+    {
+      "id": "idea",
+      "text": "Your app sends a normal OpenAI request. Apprentice gives it first to the student: Qwen three, a small open model running right on a laptop.",
+      "from": 586,
+      "frames": 324,
+      "voiceDelay": 10,
+      "voiceSeconds": 9.195
+    },
+    {
+      "id": "judge",
+      "text": "A judge checks every answer. It's Kev, a small open model we fine-tuned to spot wrong answers, raising its accuracy from forty-six to ninety-nine percent.",
+      "from": 910,
+      "frames": 350,
+      "voiceDelay": 10,
+      "voiceSeconds": 10.069
+    },
+    {
+      "id": "teacher",
+      "text": "If the judge isn't confident, the request goes up to the teacher, the large open model G L M five point two.",
+      "from": 1260,
+      "frames": 255,
+      "voiceDelay": 10,
+      "voiceSeconds": 6.891
+    },
+    {
+      "id": "learn",
+      "text": "Every teacher answer is saved to memory. When a similar question comes back, the student sees that example, and gets it right on its own.",
+      "from": 1515,
+      "frames": 290,
+      "voiceDelay": 10,
+      "voiceSeconds": 8.064
+    },
+    {
+      "id": "results",
+      "text": "On eighty held-out questions, the student alone scored twenty-five percent. After learning, Apprentice reached ninety-seven and a half percent accuracy, with eighty-six percent of requests on the small model, at eighty-seven percent lower cost than the teacher.",
+      "from": 1805,
+      "frames": 500,
+      "voiceDelay": 10,
+      "voiceSeconds": 15.061
+    },
+    {
+      "id": "honest",
+      "text": "On question types it has never seen, it scores fifty-three percent, versus thirty-three for the student alone. So the judge still matters.",
+      "from": 2305,
+      "frames": 289,
+      "voiceDelay": 10,
+      "voiceSeconds": 8.043
+    },
+    {
+      "id": "usecases",
+      "text": "It fits anywhere questions repeat: store analytics, customer support, Hinglish kirana orders, coding agents, and private data that should stay on your own machine.",
+      "from": 2594,
+      "frames": 335,
+      "voiceDelay": 10,
+      "voiceSeconds": 9.557
+    },
+    {
+      "id": "open",
+      "text": "Every model is open weight: Qwen three, G L M five point two, Kev, and Nomic embeddings.",
+      "from": 2929,
+      "frames": 233,
+      "voiceDelay": 10,
+      "voiceSeconds": 6.165
+    },
+    {
+      "id": "use",
+      "text": "Point your OpenAI client at Apprentice with one line, and watch the student take over.",
+      "from": 3162,
+      "frames": 203,
+      "voiceDelay": 10,
+      "voiceSeconds": 5.163
+    },
+    {
+      "id": "close",
+      "text": "Apprentice. Small models that learn from big ones. Built at Hacktoberfest, Mumbai.",
+      "from": 3365,
+      "frames": 205,
+      "voiceDelay": 10,
+      "voiceSeconds": 4.949
+    }
+  ]
+}

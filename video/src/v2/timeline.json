@@ -1,0 +1,186 @@
+{
+  "fps": 30,
+  "totalFrames": 3600,
+  "scenes": [
+    {
+      "id": "cold-open-meter",
+      "type": "anim",
+      "text": "Your app sends every question to a big AI model. Most are easy. You pay big-model prices anyway.",
+      "voiceSeconds": 6.528,
+      "broll": null,
+      "from": 0,
+      "frames": 247,
+      "voiceDelay": 9
+    },
+    {
+      "id": "enter-apprentice",
+      "type": "anim",
+      "text": "What if a small model took the easy ones, and learned the hard ones? That's Apprentice: an open-source gateway that speaks the OpenAI API.",
+      "voiceSeconds": 8.768,
+      "broll": null,
+      "from": 247,
+      "frames": 291,
+      "voiceDelay": 9
+    },
+    {
+      "id": "broll-one-url",
+      "type": "broll",
+      "text": "Change one base URL, and your app never knows.",
+      "voiceSeconds": 3.008,
+      "broll": "code",
+      "from": 538,
+      "frames": 116,
+      "voiceDelay": 9
+    },
+    {
+      "id": "student-desk",
+      "type": "anim",
+      "text": "First stop, the student: Kwen three, one point seven billion parameters, running on your machine through Ollama. Its answers cost nothing per token.",
+      "voiceSeconds": 9.28,
+      "broll": null,
+      "from": 654,
+      "frames": 289,
+      "voiceDelay": 9
+    },
+    {
+      "id": "judge-booth",
+      "type": "anim",
+      "text": "Small models slip up, so a judge checks every answer. Meet Kev, a tiny open model.",
+      "voiceSeconds": 5.547,
+      "broll": null,
+      "from": 943,
+      "frames": 180,
+      "voiceDelay": 9
+    },
+    {
+      "id": "broll-colab",
+      "type": "broll",
+      "text": "Fine-tuning on Colab took Kev from forty-six to ninety-nine percent accuracy.",
+      "voiceSeconds": 5.099,
+      "broll": "colab",
+      "from": 1123,
+      "frames": 167,
+      "voiceDelay": 9
+    },
+    {
+      "id": "judge-verdict",
+      "type": "anim",
+      "text": "Kev scores its confidence. Zero point eight or higher, the answer goes straight back.",
+      "voiceSeconds": 5.077,
+      "broll": null,
+      "from": 1290,
+      "frames": 189,
+      "voiceDelay": 9
+    },
+    {
+      "id": "teacher-escalation",
+      "type": "anim",
+      "text": "Lower, and it escalates to the teacher: G L M five point two, a big open-weight model.",
+      "voiceSeconds": 5.824,
+      "broll": null,
+      "from": 1479,
+      "frames": 203,
+      "voiceDelay": 9
+    },
+    {
+      "id": "memory-file",
+      "type": "anim",
+      "text": "The trick: every teacher answer goes into memory.",
+      "voiceSeconds": 2.752,
+      "broll": null,
+      "from": 1682,
+      "frames": 110,
+      "voiceDelay": 9
+    },
+    {
+      "id": "memory-recall",
+      "type": "anim",
+      "text": "When a similar question arrives, the student gets that worked example and usually solves it alone.",
+      "voiceSeconds": 5.632,
+      "broll": null,
+      "from": 1792,
+      "frames": 203,
+      "voiceDelay": 9
+    },
+    {
+      "id": "flywheel",
+      "type": "anim",
+      "text": "So the student takes more traffic over time, and the bill shrinks.",
+      "voiceSeconds": 3.456,
+      "broll": null,
+      "from": 1995,
+      "frames": 140,
+      "voiceDelay": 9
+    },
+    {
+      "id": "test-bench",
+      "type": "anim",
+      "text": "We tested it on eighty held-out text-to-S Q L questions.",
+      "voiceSeconds": 3.456,
+      "broll": null,
+      "from": 2135,
+      "frames": 131,
+      "voiceDelay": 9
+    },
+    {
+      "id": "results-accuracy",
+      "type": "anim",
+      "text": "New student: twenty-five percent. Teacher: one hundred. Apprentice, after learning: ninety-seven and a half.",
+      "voiceSeconds": 6.763,
+      "broll": null,
+      "from": 2266,
+      "frames": 218,
+      "voiceDelay": 9
+    },
+    {
+      "id": "results-cost",
+      "type": "anim",
+      "text": "The student handled eighty-six percent of requests, and the bill was eighty-seven percent smaller than teacher-only.",
+      "voiceSeconds": 6.507,
+      "broll": null,
+      "from": 2484,
+      "frames": 208,
+      "voiceDelay": 9
+    },
+    {
+      "id": "honest-limit",
+      "type": "anim",
+      "text": "The catch: on question shapes it has never seen, Apprentice gets fifty-three percent, the student alone thirty-three. Memory works best on repeats.",
+      "voiceSeconds": 9.067,
+      "broll": null,
+      "from": 2692,
+      "frames": 282,
+      "voiceDelay": 9
+    },
+    {
+      "id": "real-example",
+      "type": "anim",
+      "text": "Real questions repeat. A shop owner asks, in Hinglish, which store had the most orders. The student answers alone, for free.",
+      "voiceSeconds": 7.851,
+      "broll": null,
+      "from": 2974,
+      "frames": 247,
+      "voiceDelay": 9
+    },
+    {
+      "id": "use-cases",
+      "type": "anim",
+      "text": "A support bot answering refund questions. When the student answers, your data never leaves your machine.",
+      "voiceSeconds": 6.059,
+      "broll": null,
+      "from": 3221,
+      "frames": 233,
+      "voiceDelay": 9
+    },
+    {
+      "id": "outro",
+      "type": "anim",
+      "text": "Apprentice. Open source, open models, M I T licensed.",
+      "voiceSeconds": 3.691,
+      "broll": null,
+      "from": 3454,
+      "frames": 146,
+      "voiceDelay": 9
+    }
+  ]
+}
