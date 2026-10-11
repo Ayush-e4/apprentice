@@ -15,6 +15,7 @@ from .config import settings
 from .db import Database
 from .engine import MODES, Engine, Options
 from .providers import ProviderError
+from .shop import router as shop_router
 from .support import router as support_router
 
 DASHBOARD = Path(__file__).parent / "dashboard" / "index.html"
@@ -35,6 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Apprentice", lifespan=lifespan)
+app.include_router(shop_router)
 app.include_router(support_router)
 
 

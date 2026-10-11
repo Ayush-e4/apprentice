@@ -45,9 +45,14 @@ Text-to-SQL benchmark, 80 held-out questions. Student: Qwen3 1.7B on a laptop GT
 | Warm-up | Cascade, 185 questions | 78% | 97% | $0.0110 | 1.5 s |
 | After | Student + memory | 84% | 100% | $0.0000 | 2.9 s |
 | After | Cascade + memory | 84% | 100% | $0.0000 | 2.9 s |
-| After | Cascade + memory + fine-tuned judge | *results pending* | *pending* | *pending* | *pending* |
+| **With the trained judge** | | | | | |
+| Warm-up | Cascade + judge, 185 questions | 97% | 85% | $0.0414 | 2.4 s |
+| After | Student + memory | **96%** | 100% | **$0.0000** | 3.4 s |
+| After | Cascade + memory + judge | **97.5%** | 86% | $0.0165 | 3.1 s |
 
-With six remembered teacher answers, the student goes from 25% to 84% accuracy on unseen questions at zero teacher cost. Read this with its limits in mind: test questions come from the same 16 templates as the training questions, the database is synthetic, the numbers are from a single run, and memory held only 6 entries, because most warm-up answers passed the SQL check and were never escalated. Wrong answers that still run are exactly what the judge is for, which is why we are training one. Details and how to reproduce: [docs/benchmark.md](docs/benchmark.md).
+Without a judge, six remembered teacher answers take the student from 25% to 84% on unseen questions at zero teacher cost. The SQL check alone only escalates queries that fail, so most wrong-but-runnable answers were never sent to the teacher, and memory stayed at 6 entries. With the trained judge, those answers are escalated, the teacher's corrections are remembered (27 entries), and the student alone reaches **96%**. The cascade with the judge reaches **97.5% at 13% of the teacher-only cost**, with 86% of questions answered locally.
+
+Read this with its limits in mind: test questions come from the same 16 templates as the training questions, the database is synthetic, each row is a single run, and the "with judge" runs started from an empty memory after the runs above. Details and how to reproduce: [docs/benchmark.md](docs/benchmark.md).
 
 One setting mattered a lot: turning off Qwen3's hidden reasoning (`reasoning_effort: "none"`, since Ollama ignores `/no_think`) cut the student from about 800 to about 80 output tokens and from 12.5 s to 1.4 s per answer.
 
@@ -138,7 +143,7 @@ So we fine-tune Kev-0.8B on labelled examples generated from our own benchmark. 
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Ayush-e4/apprentice/blob/main/notebooks/train_sql_judge.ipynb)
 
-**Fine-tuned judge results: pending.** We will add them here and in [docs/judges.md](docs/judges.md) when the run finishes.
+**Fine-tuned judge results.** On the 610 held-out judge examples, accuracy went from 45.7% (released Kev-0.8B) to **99.3%**, with expected calibration error 0.004. On the 30 correct-vs-wrong pairs that Von and the LLM judge failed, it accepted 30 of 30 correct queries and caught 29 of 30 wrong ones, at about 0.4 s per check. These held-out examples share the training templates, so this shows the judge learned this benchmark, not arbitrary SQL. Full numbers: [docs/judges.md](docs/judges.md#fine-tuned-judge-results).
 
 How the training data is built, how to serve a judge, and all judge settings: [docs/judges.md](docs/judges.md).
 
