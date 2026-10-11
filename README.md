@@ -62,9 +62,36 @@ Read this with its limits in mind: test questions come from the same 16 template
 
 One setting mattered a lot: turning off Qwen3's hidden reasoning (`reasoning_effort: "none"`, since Ollama ignores `/no_think`) cut the student from about 800 to about 80 output tokens and from 12.5 s to 1.4 s per answer.
 
+## Requirements
+
+Tested on Windows 11 with Python 3.13, Node.js 24 and Ollama 0.40.
+
+**Required**
+
+| What | Used for | How to get it |
+|---|---|---|
+| Python 3.11 or newer | The gateway, benchmark and MCP server. Packages are in `requirements.txt` (about 180 MB in a venv) | [python.org](https://www.python.org/downloads/) |
+| [Ollama](https://ollama.com) | Running the student locally | [ollama.com/download](https://ollama.com/download) |
+| `qwen3:1.7b` | The student model (1.4 GB) | `ollama pull qwen3:1.7b` |
+| A teacher API key | The large open model, GLM-5.2 | Command Code's Provider API (the default `TEACHER_BASE_URL`), or any OpenAI-compatible provider |
+| Git | Cloning the repo | [git-scm.com](https://git-scm.com/downloads) |
+
+**Optional**
+
+| What | Used for | How to get it |
+|---|---|---|
+| Node.js 20 or newer, with npm | The web app in `web/` (Next.js 15; `node_modules` is about 450 MB) | [nodejs.org](https://nodejs.org) |
+| `nomic-embed-text` | Embedding search over memory (270 MB). Without it, memory search falls back to word overlap | `ollama pull nomic-embed-text` |
+| A decision judge | `judge=decision`. Von runs locally on CPU (about 4 GB with its weights); the fine-tuned Kev judge trains and serves from a free Colab T4 GPU, which needs a Google account | [docs/judges.md](docs/judges.md) |
+| Fallback API keys | `STUDENT_FALLBACK_*` and `TEACHER_FALLBACK_*`, tried when the main endpoint fails | Any OpenAI-compatible provider, such as DigitalOcean Inference, OpenRouter or Groq |
+| pytest and ruff | Tests and lint | `pip install -r requirements-dev.txt` |
+| Claude Code, Claude Desktop or Cursor | Using Apprentice as an MCP server | [docs/mcp.md](docs/mcp.md) |
+
+Disk space: about 5 GB for the required parts (including the Ollama app), plus about 0.5 GB for the web app and about 4 GB for a local Von judge.
+
 ## Quick start
 
-You need Python 3.11+, [Ollama](https://ollama.com), and an API key for the teacher endpoint.
+Install the [requirements](#requirements) first.
 
 ```bash
 git clone https://github.com/Ayush-e4/apprentice.git
