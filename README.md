@@ -35,7 +35,7 @@ flowchart LR
 
 ## Results
 
-Text-to-SQL benchmark, 80 held-out questions. Student: Qwen3 1.7B on a laptop GTX 1650. Teacher: GLM-5.2. Memory was filled during a warm-up over the 185 training questions; test questions are never written to memory.
+Text-to-SQL benchmark, 80 held-out questions. Student: Qwen3 1.7B on a laptop GTX 1650. Teacher: GLM-5.2. Memory search used `nomic-embed-text` embeddings via Ollama. Memory was filled during a warm-up over the 185 training questions; test questions are never written to memory.
 
 | Phase | Run | Accuracy | Handled by student | Cost | Median latency |
 |---|---|---|---|---|---|

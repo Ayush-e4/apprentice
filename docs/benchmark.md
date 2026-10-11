@@ -61,7 +61,7 @@ Each run is stored in the `eval_runs` and `eval_results` tables and shows up on 
 
 ## Results
 
-80 held-out questions. Student: Qwen3 1.7B via Ollama on a laptop GTX 1650. Teacher: GLM-5.2 via Command Code's Provider API. The first six rows use no judge. The last three use the fine-tuned Kev-0.8B judge (served from Colab, `JUDGE_THRESHOLD=0.8`) and start from an empty memory.
+80 held-out questions. Student: Qwen3 1.7B via Ollama on a laptop GTX 1650. Teacher: GLM-5.2 via Command Code's Provider API. Memory search: `nomic-embed-text` embeddings via Ollama (`EMBED_BASE_URL=http://localhost:11434/v1`, `EMBED_MODEL=nomic-embed-text`, `MEMORY_MIN_SIM=0.55`); without `EMBED_*` it falls back to word overlap, which matches paraphrases less well. The first six rows use no judge. The last three use the fine-tuned Kev-0.8B judge (served from Colab, `JUDGE_THRESHOLD=0.8`) and start from an empty memory.
 
 | Phase | Run | Accuracy | Handled by student | Cost | Median latency |
 |---|---|---|---|---|---|
