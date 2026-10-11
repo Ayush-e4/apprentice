@@ -1,350 +1,60 @@
 [
-  {
-    "id": "avg_units_per_order-0",
-    "template": "avg_units_per_order",
-    "question": "On average, how many units (total quantity) does a single order at the Andheri West store contain?",
-    "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Andheri West' GROUP BY o.id)"
-  },
-  {
-    "id": "avg_units_per_order-1",
-    "template": "avg_units_per_order",
-    "question": "On average, how many units (total quantity) does a single order at the Bandra Linking Road store contain?",
-    "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Bandra Linking Road' GROUP BY o.id)"
-  },
-  {
-    "id": "avg_units_per_order-2",
-    "template": "avg_units_per_order",
-    "question": "On average, how many units (total quantity) does a single order at the Dadar TT store contain?",
-    "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Dadar TT' GROUP BY o.id)"
-  },
-  {
-    "id": "avg_units_per_order-3",
-    "template": "avg_units_per_order",
-    "question": "On average, how many units (total quantity) does a single order at the Thane Station store contain?",
-    "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Thane Station' GROUP BY o.id)"
-  },
-  {
-    "id": "avg_units_per_order-4",
-    "template": "avg_units_per_order",
-    "question": "On average, how many units (total quantity) does a single order at the Powai Lake store contain?",
-    "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Powai Lake' GROUP BY o.id)"
-  },
-  {
-    "id": "avg_units_per_order-5",
-    "template": "avg_units_per_order",
-    "question": "On average, how many units (total quantity) does a single order at the Colaba Causeway store contain?",
-    "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Colaba Causeway' GROUP BY o.id)"
-  },
-  {
-    "id": "inactive_customers_month-0",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before January 2026 placed no orders at all during January 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-01-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '01')"
-  },
-  {
-    "id": "inactive_customers_month-1",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before February 2026 placed no orders at all during February 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-02-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '02')"
-  },
-  {
-    "id": "inactive_customers_month-2",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before March 2026 placed no orders at all during March 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-03-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '03')"
-  },
-  {
-    "id": "inactive_customers_month-3",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before April 2026 placed no orders at all during April 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-04-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '04')"
-  },
-  {
-    "id": "inactive_customers_month-4",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before May 2026 placed no orders at all during May 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-05-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '05')"
-  },
-  {
-    "id": "inactive_customers_month-5",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before June 2026 placed no orders at all during June 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-06-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '06')"
-  },
-  {
-    "id": "inactive_customers_month-6",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before July 2026 placed no orders at all during July 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-07-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '07')"
-  },
-  {
-    "id": "inactive_customers_month-7",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before August 2026 placed no orders at all during August 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-08-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '08')"
-  },
-  {
-    "id": "inactive_customers_month-8",
-    "template": "inactive_customers_month",
-    "question": "How many customers who joined before September 2026 placed no orders at all during September 2026?",
-    "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-09-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '09')"
-  },
-  {
-    "id": "second_store_month-0",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in January 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '01' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-1",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in February 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '02' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-2",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in March 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '03' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-3",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in April 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '04' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-4",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in May 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '05' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-5",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in June 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '06' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-6",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in July 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '07' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-7",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in August 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '08' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "second_store_month-8",
-    "template": "second_store_month",
-    "question": "Which store ranked second by revenue in September 2026?",
-    "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '09' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"
-  },
-  {
-    "id": "product_growth-0",
-    "template": "product_growth",
-    "question": "Which product had the biggest increase in units sold from January to February 2026?",
-    "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '02' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '01' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"
-  },
-  {
-    "id": "product_growth-2",
-    "template": "product_growth",
-    "question": "Which product had the biggest increase in units sold from March to April 2026?",
-    "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '04' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '03' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"
-  },
-  {
-    "id": "product_growth-3",
-    "template": "product_growth",
-    "question": "Which product had the biggest increase in units sold from April to May 2026?",
-    "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '05' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '04' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"
-  },
-  {
-    "id": "product_growth-4",
-    "template": "product_growth",
-    "question": "Which product had the biggest increase in units sold from May to June 2026?",
-    "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '06' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '05' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"
-  },
-  {
-    "id": "product_growth-5",
-    "template": "product_growth",
-    "question": "Which product had the biggest increase in units sold from June to July 2026?",
-    "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '07' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '06' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"
-  },
-  {
-    "id": "product_growth-6",
-    "template": "product_growth",
-    "question": "Which product had the biggest increase in units sold from July to August 2026?",
-    "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '08' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '07' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"
-  },
-  {
-    "id": "weekend_revenue_store-0",
-    "template": "weekend_revenue_store",
-    "question": "How much revenue did the Andheri West store make on weekends (Saturdays and Sundays)?",
-    "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Andheri West' AND strftime('%w', o.order_date) IN ('0', '6')"
-  },
-  {
-    "id": "weekend_revenue_store-1",
-    "template": "weekend_revenue_store",
-    "question": "How much revenue did the Bandra Linking Road store make on weekends (Saturdays and Sundays)?",
-    "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Bandra Linking Road' AND strftime('%w', o.order_date) IN ('0', '6')"
-  },
-  {
-    "id": "weekend_revenue_store-2",
-    "template": "weekend_revenue_store",
-    "question": "How much revenue did the Dadar TT store make on weekends (Saturdays and Sundays)?",
-    "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Dadar TT' AND strftime('%w', o.order_date) IN ('0', '6')"
-  },
-  {
-    "id": "weekend_revenue_store-3",
-    "template": "weekend_revenue_store",
-    "question": "How much revenue did the Thane Station store make on weekends (Saturdays and Sundays)?",
-    "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Thane Station' AND strftime('%w', o.order_date) IN ('0', '6')"
-  },
-  {
-    "id": "weekend_revenue_store-4",
-    "template": "weekend_revenue_store",
-    "question": "How much revenue did the Powai Lake store make on weekends (Saturdays and Sundays)?",
-    "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Powai Lake' AND strftime('%w', o.order_date) IN ('0', '6')"
-  },
-  {
-    "id": "weekend_revenue_store-5",
-    "template": "weekend_revenue_store",
-    "question": "How much revenue did the Colaba Causeway store make on weekends (Saturdays and Sundays)?",
-    "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Colaba Causeway' AND strftime('%w', o.order_date) IN ('0', '6')"
-  },
-  {
-    "id": "store_share_month-0",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in January 2026 came from the Andheri West store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Andheri West' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '01'"
-  },
-  {
-    "id": "store_share_month-1",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in February 2026 came from the Bandra Linking Road store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Bandra Linking Road' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '02'"
-  },
-  {
-    "id": "store_share_month-2",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in March 2026 came from the Dadar TT store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Dadar TT' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '03'"
-  },
-  {
-    "id": "store_share_month-3",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in April 2026 came from the Thane Station store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Thane Station' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '04'"
-  },
-  {
-    "id": "store_share_month-4",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in May 2026 came from the Powai Lake store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Powai Lake' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '05'"
-  },
-  {
-    "id": "store_share_month-5",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in June 2026 came from the Colaba Causeway store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Colaba Causeway' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '06'"
-  },
-  {
-    "id": "store_share_month-6",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in July 2026 came from the Andheri West store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Andheri West' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '07'"
-  },
-  {
-    "id": "store_share_month-7",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in August 2026 came from the Bandra Linking Road store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Bandra Linking Road' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '08'"
-  },
-  {
-    "id": "store_share_month-8",
-    "template": "store_share_month",
-    "question": "What percentage (0 to 100) of all revenue in September 2026 came from the Dadar TT store?",
-    "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Dadar TT' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '09'"
-  },
-  {
-    "id": "all_stores_customers-0",
-    "template": "all_stores_customers",
-    "question": "How many customers from Andheri have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Andheri' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-1",
-    "template": "all_stores_customers",
-    "question": "How many customers from Bandra have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Bandra' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-2",
-    "template": "all_stores_customers",
-    "question": "How many customers from Dadar have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Dadar' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-3",
-    "template": "all_stores_customers",
-    "question": "How many customers from Thane have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Thane' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-4",
-    "template": "all_stores_customers",
-    "question": "How many customers from Powai have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Powai' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-5",
-    "template": "all_stores_customers",
-    "question": "How many customers from Colaba have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Colaba' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-6",
-    "template": "all_stores_customers",
-    "question": "How many customers from Borivali have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Borivali' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "all_stores_customers-7",
-    "template": "all_stores_customers",
-    "question": "How many customers from Kurla have placed orders at every one of the six stores?",
-    "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Kurla' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"
-  },
-  {
-    "id": "price_range_category-0",
-    "template": "price_range_category",
-    "question": "What is the price gap between the most and the least expensive product in the Snacks category?",
-    "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Snacks'"
-  },
-  {
-    "id": "price_range_category-1",
-    "template": "price_range_category",
-    "question": "What is the price gap between the most and the least expensive product in the Beverages category?",
-    "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Beverages'"
-  },
-  {
-    "id": "price_range_category-2",
-    "template": "price_range_category",
-    "question": "What is the price gap between the most and the least expensive product in the Staples category?",
-    "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Staples'"
-  },
-  {
-    "id": "price_range_category-3",
-    "template": "price_range_category",
-    "question": "What is the price gap between the most and the least expensive product in the Dairy category?",
-    "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Dairy'"
-  },
-  {
-    "id": "price_range_category-4",
-    "template": "price_range_category",
-    "question": "What is the price gap between the most and the least expensive product in the Personal Care category?",
-    "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Personal Care'"
-  }
+{"id": "avg_units_per_order-0", "template": "avg_units_per_order", "question": "On average, how many units (total quantity) does a single order at the Andheri West store contain?", "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Andheri West' GROUP BY o.id)"},
+{"id": "avg_units_per_order-1", "template": "avg_units_per_order", "question": "On average, how many units (total quantity) does a single order at the Bandra Linking Road store contain?", "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Bandra Linking Road' GROUP BY o.id)"},
+{"id": "avg_units_per_order-2", "template": "avg_units_per_order", "question": "On average, how many units (total quantity) does a single order at the Dadar TT store contain?", "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Dadar TT' GROUP BY o.id)"},
+{"id": "avg_units_per_order-3", "template": "avg_units_per_order", "question": "On average, how many units (total quantity) does a single order at the Thane Station store contain?", "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Thane Station' GROUP BY o.id)"},
+{"id": "avg_units_per_order-4", "template": "avg_units_per_order", "question": "On average, how many units (total quantity) does a single order at the Powai Lake store contain?", "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Powai Lake' GROUP BY o.id)"},
+{"id": "avg_units_per_order-5", "template": "avg_units_per_order", "question": "On average, how many units (total quantity) does a single order at the Colaba Causeway store contain?", "sql": "SELECT AVG(units) FROM (SELECT o.id, SUM(oi.quantity) AS units FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Colaba Causeway' GROUP BY o.id)"},
+{"id": "inactive_customers_month-0", "template": "inactive_customers_month", "question": "How many customers who joined before January 2026 placed no orders at all during January 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-01-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '01')"},
+{"id": "inactive_customers_month-1", "template": "inactive_customers_month", "question": "How many customers who joined before February 2026 placed no orders at all during February 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-02-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '02')"},
+{"id": "inactive_customers_month-2", "template": "inactive_customers_month", "question": "How many customers who joined before March 2026 placed no orders at all during March 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-03-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '03')"},
+{"id": "inactive_customers_month-3", "template": "inactive_customers_month", "question": "How many customers who joined before April 2026 placed no orders at all during April 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-04-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '04')"},
+{"id": "inactive_customers_month-4", "template": "inactive_customers_month", "question": "How many customers who joined before May 2026 placed no orders at all during May 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-05-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '05')"},
+{"id": "inactive_customers_month-5", "template": "inactive_customers_month", "question": "How many customers who joined before June 2026 placed no orders at all during June 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-06-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '06')"},
+{"id": "inactive_customers_month-6", "template": "inactive_customers_month", "question": "How many customers who joined before July 2026 placed no orders at all during July 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-07-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '07')"},
+{"id": "inactive_customers_month-7", "template": "inactive_customers_month", "question": "How many customers who joined before August 2026 placed no orders at all during August 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-08-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '08')"},
+{"id": "inactive_customers_month-8", "template": "inactive_customers_month", "question": "How many customers who joined before September 2026 placed no orders at all during September 2026?", "sql": "SELECT COUNT(*) FROM customers c WHERE c.joined_on < '2026-09-01' AND c.id NOT IN (SELECT o.customer_id FROM orders o WHERE strftime('%m', o.order_date) = '09')"},
+{"id": "second_store_month-0", "template": "second_store_month", "question": "Which store ranked second by revenue in January 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '01' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-1", "template": "second_store_month", "question": "Which store ranked second by revenue in February 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '02' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-2", "template": "second_store_month", "question": "Which store ranked second by revenue in March 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '03' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-3", "template": "second_store_month", "question": "Which store ranked second by revenue in April 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '04' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-4", "template": "second_store_month", "question": "Which store ranked second by revenue in May 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '05' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-5", "template": "second_store_month", "question": "Which store ranked second by revenue in June 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '06' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-6", "template": "second_store_month", "question": "Which store ranked second by revenue in July 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '07' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-7", "template": "second_store_month", "question": "Which store ranked second by revenue in August 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '08' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "second_store_month-8", "template": "second_store_month", "question": "Which store ranked second by revenue in September 2026?", "sql": "SELECT s.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '09' GROUP BY s.id ORDER BY SUM(oi.quantity * oi.unit_price) DESC LIMIT 1 OFFSET 1"},
+{"id": "product_growth-0", "template": "product_growth", "question": "Which product had the biggest increase in units sold from January to February 2026?", "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '02' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '01' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"},
+{"id": "product_growth-2", "template": "product_growth", "question": "Which product had the biggest increase in units sold from March to April 2026?", "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '04' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '03' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"},
+{"id": "product_growth-3", "template": "product_growth", "question": "Which product had the biggest increase in units sold from April to May 2026?", "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '05' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '04' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"},
+{"id": "product_growth-4", "template": "product_growth", "question": "Which product had the biggest increase in units sold from May to June 2026?", "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '06' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '05' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"},
+{"id": "product_growth-5", "template": "product_growth", "question": "Which product had the biggest increase in units sold from June to July 2026?", "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '07' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '06' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"},
+{"id": "product_growth-6", "template": "product_growth", "question": "Which product had the biggest increase in units sold from July to August 2026?", "sql": "SELECT p.name FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN products p ON p.id = oi.product_id GROUP BY p.id ORDER BY SUM(CASE WHEN strftime('%m', o.order_date) = '08' THEN oi.quantity ELSE 0 END) - SUM(CASE WHEN strftime('%m', o.order_date) = '07' THEN oi.quantity ELSE 0 END) DESC LIMIT 1"},
+{"id": "weekend_revenue_store-0", "template": "weekend_revenue_store", "question": "How much revenue did the Andheri West store make on weekends (Saturdays and Sundays)?", "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Andheri West' AND strftime('%w', o.order_date) IN ('0', '6')"},
+{"id": "weekend_revenue_store-1", "template": "weekend_revenue_store", "question": "How much revenue did the Bandra Linking Road store make on weekends (Saturdays and Sundays)?", "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Bandra Linking Road' AND strftime('%w', o.order_date) IN ('0', '6')"},
+{"id": "weekend_revenue_store-2", "template": "weekend_revenue_store", "question": "How much revenue did the Dadar TT store make on weekends (Saturdays and Sundays)?", "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Dadar TT' AND strftime('%w', o.order_date) IN ('0', '6')"},
+{"id": "weekend_revenue_store-3", "template": "weekend_revenue_store", "question": "How much revenue did the Thane Station store make on weekends (Saturdays and Sundays)?", "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Thane Station' AND strftime('%w', o.order_date) IN ('0', '6')"},
+{"id": "weekend_revenue_store-4", "template": "weekend_revenue_store", "question": "How much revenue did the Powai Lake store make on weekends (Saturdays and Sundays)?", "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Powai Lake' AND strftime('%w', o.order_date) IN ('0', '6')"},
+{"id": "weekend_revenue_store-5", "template": "weekend_revenue_store", "question": "How much revenue did the Colaba Causeway store make on weekends (Saturdays and Sundays)?", "sql": "SELECT SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE s.name = 'Colaba Causeway' AND strftime('%w', o.order_date) IN ('0', '6')"},
+{"id": "store_share_month-0", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in January 2026 came from the Andheri West store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Andheri West' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '01'"},
+{"id": "store_share_month-1", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in February 2026 came from the Bandra Linking Road store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Bandra Linking Road' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '02'"},
+{"id": "store_share_month-2", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in March 2026 came from the Dadar TT store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Dadar TT' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '03'"},
+{"id": "store_share_month-3", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in April 2026 came from the Thane Station store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Thane Station' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '04'"},
+{"id": "store_share_month-4", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in May 2026 came from the Powai Lake store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Powai Lake' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '05'"},
+{"id": "store_share_month-5", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in June 2026 came from the Colaba Causeway store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Colaba Causeway' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '06'"},
+{"id": "store_share_month-6", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in July 2026 came from the Andheri West store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Andheri West' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '07'"},
+{"id": "store_share_month-7", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in August 2026 came from the Bandra Linking Road store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Bandra Linking Road' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '08'"},
+{"id": "store_share_month-8", "template": "store_share_month", "question": "What percentage (0 to 100) of all revenue in September 2026 came from the Dadar TT store?", "sql": "SELECT 100.0 * SUM(CASE WHEN s.name = 'Dadar TT' THEN oi.quantity * oi.unit_price ELSE 0 END) / SUM(oi.quantity * oi.unit_price) FROM order_items oi JOIN orders o ON o.id = oi.order_id JOIN stores s ON s.id = o.store_id WHERE strftime('%m', o.order_date) = '09'"},
+{"id": "all_stores_customers-0", "template": "all_stores_customers", "question": "How many customers from Andheri have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Andheri' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-1", "template": "all_stores_customers", "question": "How many customers from Bandra have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Bandra' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-2", "template": "all_stores_customers", "question": "How many customers from Dadar have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Dadar' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-3", "template": "all_stores_customers", "question": "How many customers from Thane have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Thane' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-4", "template": "all_stores_customers", "question": "How many customers from Powai have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Powai' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-5", "template": "all_stores_customers", "question": "How many customers from Colaba have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Colaba' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-6", "template": "all_stores_customers", "question": "How many customers from Borivali have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Borivali' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "all_stores_customers-7", "template": "all_stores_customers", "question": "How many customers from Kurla have placed orders at every one of the six stores?", "sql": "SELECT COUNT(*) FROM (SELECT c.id FROM customers c JOIN orders o ON o.customer_id = c.id WHERE c.area = 'Kurla' GROUP BY c.id HAVING COUNT(DISTINCT o.store_id) = 6)"},
+{"id": "price_range_category-0", "template": "price_range_category", "question": "What is the price gap between the most and the least expensive product in the Snacks category?", "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Snacks'"},
+{"id": "price_range_category-1", "template": "price_range_category", "question": "What is the price gap between the most and the least expensive product in the Beverages category?", "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Beverages'"},
+{"id": "price_range_category-2", "template": "price_range_category", "question": "What is the price gap between the most and the least expensive product in the Staples category?", "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Staples'"},
+{"id": "price_range_category-3", "template": "price_range_category", "question": "What is the price gap between the most and the least expensive product in the Dairy category?", "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Dairy'"},
+{"id": "price_range_category-4", "template": "price_range_category", "question": "What is the price gap between the most and the least expensive product in the Personal Care category?", "sql": "SELECT MAX(price) - MIN(price) FROM products WHERE category = 'Personal Care'"}
 ]

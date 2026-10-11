@@ -127,7 +127,8 @@ def build() -> dict:
     items = generate()
     examples = judge_examples(items)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    QUESTIONS_PATH.write_text(json.dumps(items, indent=2), encoding="utf-8")
+    # One question per line keeps the committed file short and easy to diff.
+    QUESTIONS_PATH.write_text("[\n" + ",\n".join(json.dumps(i) for i in items) + "\n]\n", encoding="utf-8")
     with JUDGE_PATH.open("w", encoding="utf-8") as f:
         for ex in examples:
             f.write(json.dumps(ex, ensure_ascii=False, default=str) + "\n")
