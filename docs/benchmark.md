@@ -61,7 +61,7 @@ Each run is stored in the `eval_runs` and `eval_results` tables and shows up on 
 
 ## Results
 
-80 held-out questions. Student: Qwen3 1.7B via Ollama on a laptop GTX 1650. Teacher: GLM-5.2 via Command Code's Provider API. No judge.
+80 held-out questions. Student: Qwen3 1.7B via Ollama on a laptop GTX 1650. Teacher: GLM-5.2 via Command Code's Provider API. The first six rows use no judge. The last three use the fine-tuned Kev-0.8B judge (served from Colab, `JUDGE_THRESHOLD=0.8`) and start from an empty memory.
 
 | Phase | Run | Accuracy | Handled by student | Cost | Median latency |
 |---|---|---|---|---|---|
@@ -71,13 +71,16 @@ Each run is stored in the `eval_runs` and `eval_results` tables and shows up on 
 | Warm-up | Cascade, 185 questions | 78% | 97% | $0.0110 | 1.5 s |
 | After | Student + memory | 84% | 100% | $0.0000 | 2.9 s |
 | After | Cascade + memory | 84% | 100% | $0.0000 | 2.9 s |
-| After | Cascade + memory + fine-tuned judge | *results pending* | *pending* | *pending* | *pending* |
+| Warm-up | Cascade + judge, 185 questions | 97.3% | 85.4% | $0.0414 | 2.4 s |
+| After | Student + memory (27 entries) | 96.3% | 100% | $0.0000 | 3.4 s |
+| After | Cascade + memory + judge | 97.5% | 86.3% | $0.0165 | 3.1 s |
 
 ### What this shows
 
 - The student alone gets a quarter of the questions right. The teacher gets all of them right, at a cost.
 - The cascade without memory already sends 70% of requests to the student, but accuracy drops to 55%, because many wrong queries still run and return rows, so the SQL verifier lets them through.
 - After the warm-up, a handful of teacher answers used as few-shot examples lift the student to 84% on unseen questions, and the teacher is not called at all.
+- With the judge, wrong-but-runnable student answers are escalated during warm-up, so the teacher's corrections are remembered: memory grows from 6 to 27 entries and the student alone reaches 96.3%. The cascade with the judge reaches 97.5% while answering 86% of questions locally, at 13% of the teacher-only cost ($0.0165 vs $0.1261).
 
 ### Limits
 
