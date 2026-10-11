@@ -16,8 +16,32 @@ import httpx
 from .config import Endpoint
 
 
+SQL_STATEMENT = "The SQL query correctly answers the user's question, and its result is the requested answer."
+TEXT_STATEMENT = "The assistant's answer correctly and completely answers the user's question."
+
+
 class JudgeError(Exception):
     pass
+
+
+def sql_state(question: str, preview: dict) -> dict:
+    """What the judge sees for a SQL answer. Training data (bench/judge_data.py) uses the same shape."""
+    return {"question": question, **preview}
+
+
+def text_state(instructions: str, question: str, answer: str) -> dict:
+    return {"instructions": instructions[:4000], "question": question, "answer": answer}
+
+
+def noul_question(statement: str) -> dict:
+    return {
+        "type": "noul",
+        "instructions": statement,
+        "criteria": {
+            "true": "The answer fully and correctly addresses the question",
+            "false": "The answer is wrong, incomplete, or answers a different question",
+        },
+    }
 
 
 @dataclass
@@ -47,16 +71,7 @@ async def systemone_check(
             json={
                 "model": ep.model,
                 "state": json.dumps(state, ensure_ascii=False, default=str),
-                "questions": {
-                    "correct": {
-                        "type": "noul",
-                        "instructions": statement,
-                        "criteria": {
-                            "true": "The answer fully and correctly addresses the question",
-                            "false": "The answer is wrong, incomplete, or answers a different question",
-                        },
-                    }
-                },
+                "questions": {"correct": noul_question(statement)},
             },
             timeout=timeout_s,
         )
