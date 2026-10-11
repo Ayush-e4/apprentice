@@ -196,10 +196,16 @@ llm_judge: glm-5.1
 
 > Show Apprentice benchmark results
 
+These are the real runs from the benchmark in the README (Qwen3 1.7B student on a GTX 1650, GLM-5.2 teacher):
+
 ```
  id  phase     mode                n accuracy  student   cost_usd  p50_ms  p95_ms memory
-  1  baseline  student            80    45.0%   100.0%     0.0000     512     930      0
-  2  baseline  teacher            80    81.3%     0.0%     0.0410    2100    4800      0
+  1  baseline  student            80    25.0%   100.0%     0.0000    2296    3170      0
+  2  baseline  teacher            80   100.0%     0.0%     0.1261    5263   10628      0
+  3  baseline  cascade            80    55.0%    70.0%     0.0451    2530   10912      0
+  4  warm      cascade           185    77.8%    96.8%     0.0110    1485    2400      6
+  5  after     student            80    83.8%   100.0%     0.0000    2879    3848      6
+  6  after     cascade            80    83.8%   100.0%     0.0000    2850    3821      6
 ```
 
 ## Troubleshooting
