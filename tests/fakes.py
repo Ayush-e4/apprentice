@@ -44,6 +44,11 @@ class FakeModels:
 
     def handler(self, request: httpx.Request) -> httpx.Response:
         role = request.url.host.split(".")[0]
+        if request.method == "GET":  # model listing, used by the health check
+            down = self.replies.get(f"{role}_health")
+            if isinstance(down, int):
+                return httpx.Response(down, json={"error": {"message": "scripted failure"}})
+            return httpx.Response(200, json={"object": "list", "data": [{"id": f"fake-{role}"}]})
         body = json.loads(request.content)
         self.calls.append((role, body))
         if role not in self.replies:
