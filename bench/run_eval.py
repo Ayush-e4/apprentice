@@ -170,7 +170,8 @@ async def main() -> None:
     parser.add_argument("--concurrency", type=int, default=2)
     parser.add_argument("--limit", type=int, default=0, help="use only the first N questions per split")
     parser.add_argument(
-        "--judge", choices=["decision"], default=None, help="decision-model correctness check in cascade runs"
+        "--judge", choices=["decision", "llm"], default=None,
+        help="correctness check in cascade runs: decision model or yes/no LLM"
     )
     args = parser.parse_args()
 

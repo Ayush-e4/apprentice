@@ -149,6 +149,7 @@ def stats():
             "teacher": describe(settings.teacher),
             "embed": settings.embed.model if settings.embed else None,
             "judge": settings.judge.model if settings.judge else None,
+            "llm_judge": settings.llm_judge.model if settings.llm_judge else None,
         },
     }
 

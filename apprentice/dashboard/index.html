@@ -95,7 +95,13 @@
             <option value="teacher">teacher only</option>
           </select>
           <label><input type="checkbox" id="try-sql" checked> Shop database (SQL check)</label>
-          <label><input type="checkbox" id="try-judge"> Judge check</label>
+          <label>Judge
+            <select id="try-judge">
+              <option value="">none</option>
+              <option value="decision">decision</option>
+              <option value="llm">llm</option>
+            </select>
+          </label>
           <button type="submit">Send</button>
           <button type="button" class="secondary" id="reset">Reset all data</button>
         </div>
@@ -204,7 +210,7 @@ document.getElementById("try").addEventListener("submit", async ev => {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ model: "apprentice", messages,
       apprentice: { mode: document.getElementById("try-mode").value, verifier: sql ? "sql" : null,
-                    judge: document.getElementById("try-judge").checked ? "decision" : null, tag: "try" } }),
+                    judge: document.getElementById("try-judge").value || null, tag: "try" } }),
   });
   const data = await res.json();
   if (!res.ok) { out.textContent = data.error?.message || "Request failed"; return; }
