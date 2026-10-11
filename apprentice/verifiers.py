@@ -23,8 +23,21 @@ def extract_sql(text: str) -> str:
     return sql.split(";")[0].strip()
 
 
-def run_sql(db_path: Path, sql: str, timeout_s: float = 5.0, max_rows: int = 1000) -> list[tuple]:
+def _deny_attach(action: int, *_) -> int:
+    # mode=ro guards the shop database, but ATTACH and VACUUM INTO (which SQLite authorizes as an
+    # ATTACH) still create files on disk, so model-written SQL may not use them
+    return sqlite3.SQLITE_DENY if action in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH) else sqlite3.SQLITE_OK
+
+
+def connect_readonly(db_path: Path) -> sqlite3.Connection:
+    """A connection for running model-written SQL: read-only, and unable to create files."""
     conn = sqlite3.connect(f"file:{db_path.as_posix()}?mode=ro", uri=True)
+    conn.set_authorizer(_deny_attach)
+    return conn
+
+
+def run_sql(db_path: Path, sql: str, timeout_s: float = 5.0, max_rows: int = 1000) -> list[tuple]:
+    conn = connect_readonly(db_path)
     deadline = time.perf_counter() + timeout_s
     conn.set_progress_handler(lambda: 1 if time.perf_counter() > deadline else 0, 10_000)
     try:
@@ -36,7 +49,7 @@ def run_sql(db_path: Path, sql: str, timeout_s: float = 5.0, max_rows: int = 100
 def preview_sql(db_path: Path, text: str, n: int = 5) -> dict:
     """The query and the first rows it returns, for showing to a judge."""
     sql = extract_sql(text)
-    conn = sqlite3.connect(f"file:{db_path.as_posix()}?mode=ro", uri=True)
+    conn = connect_readonly(db_path)
     try:
         cur = conn.execute(sql)
         return {

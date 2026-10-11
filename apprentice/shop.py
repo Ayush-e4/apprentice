@@ -16,7 +16,7 @@ from bench.questions import SYSTEM_PROMPT
 
 from .engine import JUDGES, MODES, Options
 from .providers import ProviderError
-from .verifiers import extract_sql
+from .verifiers import connect_readonly, extract_sql
 
 PAGE = Path(__file__).parent / "dashboard" / "shop.html"
 MAX_ROWS = 50
@@ -46,7 +46,7 @@ def _error(status: int, message: str) -> JSONResponse:
 
 
 def _answer_table(db_path: Path, sql: str) -> tuple[list[str], list[list], str | None]:
-    conn = sqlite3.connect(f"file:{db_path.as_posix()}?mode=ro", uri=True)
+    conn = connect_readonly(db_path)
     try:
         cur = conn.execute(sql)
         columns = [d[0] for d in cur.description or []]
