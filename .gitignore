@@ -35,3 +35,6 @@ data/runtime/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Judge eval results (bench.judge_data_v2 eval)
+data/judge_v2/*_results.json

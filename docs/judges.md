@@ -140,3 +140,48 @@ A second check, the 30 correct-vs-wrong pairs used to test every judge above (th
 We use `JUDGE_THRESHOLD=0.8`.
 
 **Limits.** The held-out examples use the same 16 question templates as training, with different stores, months and values. These numbers show the judge learned this benchmark's mistakes. They do not show it can judge arbitrary SQL. A new schema or new question shapes need new labelled data, which `bench/judge_data.py` shows how to generate.
+
+## Judge v2 data
+
+The fine-tuned judge has two measured weaknesses: it scores 76.8% on the [unseen question types](generalization.md) (99.3% on the seen ones), and it approved a wrong answer to a Hinglish question. `bench/judge_data_v2.py` builds training data for a v2 judge that starts from v1.
+
+**Fair split of the unseen templates.** Four unseen templates go into training and four stay held out, so v1 and v2 are compared on question types neither trained on:
+
+| Training | Held out |
+|---|---|
+| `price_range_category` (easy) | `weekend_revenue_store` (weekday filter) |
+| `avg_units_per_order` (per-order subquery) | `second_store_month` (OFFSET ranking) |
+| `inactive_customers_month` (anti-join) | `store_share_month` (percentage share) |
+| `product_growth` (month-over-month pivot) | `all_stores_customers` (relational division) |
+
+**Sources of training examples** (`data/judge_v2/train.jsonl`, shuffled with a fixed seed, every label from execution as in v1):
+
+| Source | Examples | Correct | Wrong |
+|---|---|---|---|
+| v1 training data (`data/judge/train.jsonl`) | 1,401 | 588 | 813 |
+| The 4 training unseen templates | 174 | 82 | 92 |
+| Real student attempts from the gateway's `traces` table | 374 | 321 | 53 |
+| Hinglish rewrites of 63 training questions (`bench/hinglish.py`) | 469 | 208 | 261 |
+| **Total** | **2,418** | **1,199** | **1,219** |
+
+Real attempts are kept only when the trace's question exactly matches a train-split question or a question from a training unseen template; SQL that fails or returns no rows is skipped, and each (question, SQL) pair is kept once. Of 1,092 traces, 423 matched (382 distinct pairs, 374 that run and return rows); the 563 traces of test-split questions and 64 of held-out unseen questions were left out. The Hinglish rewrites come from a hand-written phrasebook, one phrasing per template (for example *"March 2026 mein Powai Lake store ka total revenue kitna tha?"*), with the same gold, rewrites and mutations as the English question.
+
+**Held-out files** (neither v1 nor v2 trains on them):
+
+| File | Examples | Correct | Wrong |
+|---|---|---|---|
+| `data/judge/heldout.jsonl` (seen templates, test split) | 610 | 252 | 358 |
+| `data/judge_v2/heldout_unseen.jsonl` (the 4 held-out unseen templates) | 245 | 105 | 140 |
+| `data/judge_v2/heldout_hinglish.jsonl` (Hinglish versions of the 80 test questions) | 607 | 252 | 355 |
+
+Rebuild with `python -m bench.judge_data_v2 build --traces <gateway database>` (opened read-only), and score any file against the judge set by `JUDGE_*` with `python -m bench.judge_data_v2 eval --file <jsonl>`.
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Ayush-e4/apprentice/blob/main/notebooks/train_sql_judge_v2.ipynb)
+
+`notebooks/train_sql_judge_v2.ipynb` fine-tunes v2 from the released v1 judge (same base model, 2 epochs, learning rate 2e-5, fp32), scores v1 and v2 on the three held-out files, and can serve v2 on port 8010 next to a running v1.
+
+| Held-out file | v1 accuracy | v2 accuracy |
+|---|---|---|
+| Seen templates | 99.3% | pending training |
+| Held-out unseen templates | pending training | pending training |
+| Hinglish | pending training | pending training |

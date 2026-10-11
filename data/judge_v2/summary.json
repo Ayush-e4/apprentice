@@ -1,0 +1,53 @@
+{
+  "train_templates": [
+    "price_range_category",
+    "avg_units_per_order",
+    "inactive_customers_month",
+    "product_growth"
+  ],
+  "heldout_templates": [
+    "weekend_revenue_store",
+    "second_store_month",
+    "store_share_month",
+    "all_stores_customers"
+  ],
+  "sources": {
+    "v1": {
+      "n": 1401,
+      "correct": 588,
+      "wrong": 813
+    },
+    "unseen_train": {
+      "n": 174,
+      "correct": 82,
+      "wrong": 92
+    },
+    "traces": {
+      "n": 374,
+      "correct": 321,
+      "wrong": 53
+    },
+    "hinglish": {
+      "n": 469,
+      "correct": 208,
+      "wrong": 261
+    }
+  },
+  "files": {
+    "train": {
+      "n": 2418,
+      "correct": 1199,
+      "wrong": 1219
+    },
+    "heldout_unseen": {
+      "n": 245,
+      "correct": 105,
+      "wrong": 140
+    },
+    "heldout_hinglish": {
+      "n": 607,
+      "correct": 252,
+      "wrong": 355
+    }
+  }
+}
