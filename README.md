@@ -39,7 +39,7 @@ Per-request options go in an `apprentice` object in the request body (or `X-Appr
 | `memory` | use remembered teacher answers as examples | `true` |
 | `learn` | store teacher answers in memory | `true` |
 | `verifier` | `sql` (student SQL must run and return rows, otherwise escalate) | none |
-| `judge` | `decision`: a decision model scores whether the student's answer is actually correct; scores below `JUDGE_THRESHOLD` escalate | none |
+| `judge` | `decision`: a decision model scores whether the student's answer is actually correct; scores below `JUDGE_THRESHOLD` escalate. `llm`: an open LLM answers yes/no to the same check; a "no" escalates | none |
 
 Without a verifier, the cascade sends a request to the student only when memory holds a similar teacher answer. The verifier catches answers that are clearly broken; the judge catches answers that run but are wrong. If the judge is unreachable, the answer is let through and the trace says so.
 
@@ -51,6 +51,8 @@ von serve --port 8020 --noul-decision raw   # raw = calibrated probabilities, ne
 ```
 
 [Kev](https://github.com/jaredpalmer/kev) (Apache-2.0) works the same way.
+
+`judge=llm` is a backup that needs no decision server: any OpenAI-compatible chat model sees the same state and statement and replies `yes` (score 1.0) or `no` (0.0). Set `LLM_JUDGE_BASE_URL`, `LLM_JUDGE_MODEL` and `LLM_JUDGE_API_KEY`, or leave them unset to use the teacher's endpoint. A reply with neither word counts as a judge failure, and the answer is let through.
 
 ## Benchmark
 
@@ -69,6 +71,7 @@ Test questions are never written to memory.
 | Student | Qwen3 (small) via Ollama | Apache-2.0 |
 | Teacher | GLM-5.1 via Command Code Provider API | MIT |
 | Judge (optional) | [Von](https://huggingface.co/wfzyx/von) decision model, local | Apache-2.0 |
+| LLM judge (optional backup) | the teacher model by default, or any OpenAI-compatible model | MIT (GLM) |
 
 ## License
 

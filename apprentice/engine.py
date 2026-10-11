@@ -10,6 +10,7 @@ Modes:
 In cascade mode, judge="decision" adds a second check on student answers that
 pass the verifier: a decision model (Von, Kev or Jev, see judges.py) scores
 whether the answer is actually correct, and low scores escalate to the teacher.
+judge="llm" does the same with an open LLM answering yes/no (see llm_judge.py).
 """
 
 import time
@@ -20,12 +21,13 @@ import httpx
 from .config import Settings
 from .db import Database
 from .judges import SQL_STATEMENT, TEXT_STATEMENT, JudgeError, sql_state, systemone_check, text_state
+from .llm_judge import llm_check
 from .memory import Hit, Memory
 from .providers import Completion, ProviderError, chat
 from .verifiers import preview_sql, verify_sql
 
 MODES = ("cascade", "student", "teacher")
-JUDGES = ("decision",)
+JUDGES = ("decision", "llm")
 
 
 @dataclass
@@ -109,9 +111,9 @@ class Engine:
 
     async def _judge(self, opts: Options, messages: list[dict], answer: str):
         """Returns (ok, score, cost, note). Judge failures let the answer through."""
-        if opts.judge != "decision":
+        if opts.judge not in JUDGES:
             return True, None, 0.0, ""
-        judge = self.s.judge
+        judge = self.s.judge if opts.judge == "decision" else self.s.llm_judge
         if judge is None:
             return True, None, 0.0, "judge not configured"
         question = last_user_text(messages)
@@ -122,7 +124,12 @@ class Engine:
             state = text_state(system_text(messages), question, answer)
             statement = TEXT_STATEMENT
         try:
-            v = await systemone_check(self.client, judge, self.s.judge_threshold, state, statement)
+            if opts.judge == "decision":
+                v = await systemone_check(self.client, judge, self.s.judge_threshold, state, statement)
+            else:
+                v = await llm_check(
+                    self.client, judge, self.s.llm_judge_threshold, state, statement, timeout_s=self.s.timeout_s
+                )
         except JudgeError as e:
             return True, None, 0.0, f"judge unavailable ({e})"
         return v.ok, v.score, v.cost, f"judge {v.score:.2f}"

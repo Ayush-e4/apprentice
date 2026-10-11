@@ -6,7 +6,7 @@ The first one is the primary; the rest are fallbacks tried when it fails
 """
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -69,12 +69,15 @@ class Settings:
     timeout_s: float
     judge: Endpoint | None
     judge_threshold: float
+    llm_judge: Endpoint | None
+    llm_judge_threshold: float
 
 
 def load_settings() -> Settings:
+    teacher = _chain("TEACHER", "teacher")
     return Settings(
         student=_chain("STUDENT", "student"),
-        teacher=_chain("TEACHER", "teacher"),
+        teacher=teacher,
         embed=_endpoint("EMBED", "embed"),
         db_path=ROOT / os.getenv("APPRENTICE_DB", "data/runtime/apprentice.db"),
         bench_db_path=ROOT / os.getenv("BENCH_DB", "data/runtime/shop.db"),
@@ -85,6 +88,9 @@ def load_settings() -> Settings:
         # Decision judge: any server speaking the /v1/systemone protocol (Von, Kev, Jev)
         judge=_endpoint("JUDGE", "judge"),
         judge_threshold=_float("JUDGE_THRESHOLD", 0.8),
+        # LLM judge: any OpenAI-compatible chat endpoint answering yes/no; defaults to the teacher
+        llm_judge=_endpoint("LLM_JUDGE", "llm-judge") or (replace(teacher[0], name="llm-judge") if teacher else None),
+        llm_judge_threshold=_float("LLM_JUDGE_THRESHOLD", 0.5),
     )
 
 
