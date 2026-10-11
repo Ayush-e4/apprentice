@@ -21,10 +21,7 @@ def ask(client, question="How many orders have been placed?", **body):
     return client.post("/api/shop/ask", json={"question": question, **body})
 
 
-def test_page_and_examples_are_served(client):
-    page = client.get("/shop")
-    assert page.status_code == 200
-    assert "Kirana Copilot" in page.text
+def test_examples_are_served(client):
     examples = client.get("/api/shop/examples").json()["examples"]
     assert len(examples) >= 5
     assert any("mein" in q for q in examples), "includes Hinglish examples"

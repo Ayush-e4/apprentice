@@ -125,16 +125,6 @@ def test_stats_and_reset_cover_support_traffic_only(client, fake):
     assert client.get("/api/stats").json()["totals"]["requests"] == 1  # the other trace is kept
 
 
-def test_page_and_assets_are_served(client):
-    r = client.get("/support")
-    assert r.status_code == 200
-    assert "text/html" in r.headers["content-type"]
-    assert "QuickBite" in r.text
-    assert client.get("/support/support.js").status_code == 200
-    assert "text/css" in client.get("/support/support.css").headers["content-type"]
-    assert client.get("/support/secrets.txt").status_code == 404
-
-
 def test_questions_endpoint(client):
     data = client.get("/api/support/questions").json()
     assert data["examples"] == EXAMPLES

@@ -145,7 +145,3 @@ def test_bench_system_prompt(client):
     assert "```sql" in client.get("/api/bench/system-prompt").json()["prompt"]
 
 
-def test_dashboard_is_served(client):
-    r = client.get("/")
-    assert r.status_code == 200
-    assert "text/html" in r.headers["content-type"]

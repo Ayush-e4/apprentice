@@ -8,18 +8,15 @@ tagged "support", so the page's numbers and its reset cover this demo only.
 
 import os
 from dataclasses import replace
-from pathlib import Path
 
 from fastapi import APIRouter, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 
 from ..engine import Engine, Options
 from ..providers import ProviderError
 from .knowledge import SYSTEM_PROMPT
 from .questions import EXAMPLES, simulation
 
-STATIC = Path(__file__).parent / "static"
-ASSETS = {"support.css", "support.js"}
 TAG = "support"
 MAX_QUESTION = 1000
 
@@ -54,18 +51,6 @@ async def _ask(engine: Engine, question: str) -> dict:
         "top_sim": round(r.top_sim, 3),
         "trace_id": r.trace_id,
     }
-
-
-@router.get("/support")
-def support_page():
-    return FileResponse(STATIC / "index.html")
-
-
-@router.get("/support/{name}")
-def support_asset(name: str):
-    if name not in ASSETS:
-        return _error(404, "not found", "not_found")
-    return FileResponse(STATIC / name)
 
 
 @router.get("/api/support/questions")

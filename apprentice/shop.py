@@ -9,7 +9,7 @@ import sqlite3
 from pathlib import Path
 
 from fastapi import APIRouter, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from bench.questions import SYSTEM_PROMPT
@@ -18,7 +18,6 @@ from .engine import JUDGES, MODES, Options
 from .providers import ProviderError
 from .verifiers import connect_readonly, extract_sql
 
-PAGE = Path(__file__).parent / "dashboard" / "shop.html"
 MAX_ROWS = 50
 
 EXAMPLES = [
@@ -55,11 +54,6 @@ def _answer_table(db_path: Path, sql: str) -> tuple[list[str], list[list], str |
         return [], [], str(e)
     finally:
         conn.close()
-
-
-@router.get("/shop")
-def shop_page():
-    return FileResponse(PAGE)
 
 
 @router.get("/api/shop/examples")

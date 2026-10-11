@@ -78,7 +78,9 @@ Start the gateway:
 uvicorn apprentice.gateway:app --port 8000
 ```
 
-Open <http://localhost:8000> for the dashboard: requests, share handled by the student, cost, latency, memory size, benchmark runs, and a form to try questions against the shop database.
+The gateway serves APIs only. The UI is the web app in [`web/`](web/README.md) (Next.js): `cd web`, `npm install`, `npm run build`, `npm start -- -p 3100`, then open <http://localhost:3100>. It has an overview, Kirana Copilot, the QuickBite support demo, and a dashboard with requests, the share handled by the student, cost, latency, memory size, health and benchmark runs. Old gateway page URLs (`/`, `/shop`, `/support`) redirect there; set `WEB_URL` if it runs elsewhere.
+
+On Windows, `powershell -ExecutionPolicy Bypass -File scripts\demo.ps1` starts both gateways and the web app, then prints a health check of every dependency.
 
 Send a request with any OpenAI client (`pip install openai`):
 
@@ -111,11 +113,11 @@ python -m bench.run_eval all --limit 5   # a quick smoke test on 5 questions per
 
 Results appear on the dashboard as each run finishes.
 
-For a customer-support demo, where repeated questions move from the teacher to the student, open <http://localhost:8000/support>; see [docs/support-demo.md](docs/support-demo.md).
+For a customer-support demo, where repeated questions move from the teacher to the student, open <http://localhost:3100/support>; see [docs/support-demo.md](docs/support-demo.md). In our run with real models, 18 of 30 simulated customers (60%) were answered locally, for $0.025 in total.
 
 ### Web app
 
-A Next.js front end with both demos and the dashboard lives in [`web/`](web/README.md): `cd web`, `npm install`, `npm run dev -- -p 3100`, then open <http://localhost:3100> (set `APPRENTICE_URL` and `SUPPORT_URL` if your gateways are not on ports 8000 and 8001).
+The web app proxies `/gw/*` to `APPRENTICE_URL` (default `http://localhost:8000`) and `/support-gw/*` to `SUPPORT_URL` (default `http://localhost:8001`, the support demo's own gateway and memory). See [web/README.md](web/README.md).
 
 ## Per-request options
 
@@ -171,7 +173,7 @@ Closed models are optional and are never the teacher. Because every role is just
 
 ```
 apprentice/
-  gateway.py          FastAPI app: /v1/chat/completions, /v1/models, dashboard API
+  gateway.py          FastAPI app: /v1/chat/completions, /v1/models, the web app's APIs
   engine.py           Routing between student and teacher, checks, learning
   providers.py        Calls to OpenAI-compatible chat and embedding endpoints, with fallback
   memory.py           Stores teacher answers; finds similar ones (embeddings or word overlap)
@@ -180,21 +182,29 @@ apprentice/
   llm_judge.py        Yes/no judge using any OpenAI-compatible chat model
   config.py           Settings loaded from .env
   db.py               SQLite storage for traces, memory and benchmark runs
-  dashboard/          Single-page dashboard served at /
+  shop.py             Kirana Copilot API: question -> SQL -> answer table (read-only)
+  support/            QuickBite support demo API
+  health.py           /api/health: is every dependency reachable?
+  mcp_server.py       MCP server (see docs/mcp.md)
+  web.py              Redirects old page URLs to the web app
+web/                  Next.js web app: overview, Kirana Copilot, QuickBite, dashboard
 bench/
   shopdb.py           Builds the synthetic Mumbai grocery-chain database
   questions.py        16 question templates with gold SQL; the train/test split
   run_eval.py         Runs the benchmark phases through the gateway
   judge_data.py       Builds labelled examples for training a SQL judge
+  unseen.py           Question types never seen in training (docs/generalization.md)
+  adversarial.py      Hostile and nonsense inputs (docs/safety.md)
 data/judge/           Judge training (1,401) and held-out (610) examples
 notebooks/            Colab notebook that fine-tunes Kev-0.8B as a SQL judge
-docs/                 Benchmark, judges and configuration details
+scripts/demo.ps1      Starts gateways and web app, prints a health check
+docs/                 Benchmark, judges, generalization, safety, MCP and configuration details
 .env.example          Every setting, with comments
 ```
 
 ## Contributing
 
-Contributions are welcome, including small ones. Read [CONTRIBUTING.md](CONTRIBUTING.md) (being added in a separate pull request) for how to set up the project, what we are looking for, and how to open a pull request. Good places to start: a new verifier in `apprentice/verifiers.py`, streaming support in `apprentice/gateway.py`, or a new set of question templates in `bench/questions.py`.
+Contributions are welcome, including small ones. Read [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up the project, what we are looking for, and how to open a pull request. Good places to start: a new verifier in `apprentice/verifiers.py`, streaming support in `apprentice/gateway.py`, or a new set of question templates in `bench/questions.py`.
 
 ## License
 
