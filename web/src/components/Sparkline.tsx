@@ -14,10 +14,7 @@ export default function Sparkline({
   const pad = 4;
   if (values.length < 2) {
     return (
-      <div
-        className="grid place-items-center rounded-lg border border-dashed border-zinc-200 text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-500"
-        style={{ height }}
-      >
+      <div className="grid place-items-center border border-dashed border-rule-strong font-mono text-xs text-muted" style={{ height }}>
         The line appears as answers come in
       </div>
     );
@@ -25,14 +22,13 @@ export default function Sparkline({
   const x = (i: number) => pad + (i / (values.length - 1)) * (w - pad * 2);
   const y = (v: number) => pad + (1 - Math.max(0, Math.min(1, v))) * (h - pad * 2);
   const line = values.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-  const area = `${line} L${x(values.length - 1).toFixed(1)},${h - pad} L${x(0).toFixed(1)},${h - pad} Z`;
   const last = values[values.length - 1];
   return (
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="block w-full" style={{ height }} role="img" aria-label={label}>
-      <line x1={pad} x2={w - pad} y1={y(0.5)} y2={y(0.5)} className="stroke-zinc-200 dark:stroke-zinc-800" strokeDasharray="3 4" />
-      <path d={area} className="fill-emerald-500/15" />
-      <path d={line} className="stroke-emerald-500" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
-      <circle cx={x(values.length - 1)} cy={y(last)} r="3.5" className="fill-emerald-500" />
+      <line x1={pad} x2={w - pad} y1={y(0.5)} y2={y(0.5)} stroke="var(--rule-strong)" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />
+      <line x1={pad} x2={w - pad} y1={h - pad} y2={h - pad} stroke="var(--ink)" vectorEffect="non-scaling-stroke" />
+      <path d={line} stroke="var(--local)" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+      <circle cx={x(values.length - 1)} cy={y(last)} r="3.5" fill="var(--local)" />
     </svg>
   );
 }

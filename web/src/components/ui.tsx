@@ -1,23 +1,63 @@
-// Small presentational building blocks used across pages.
+// Small presentational building blocks used across pages: square panels, numbered section
+// titles, the page header, and loading / error states. Black 1px rules, no shadows, no radius.
 
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn("border border-ink bg-paper", className)}>{children}</div>;
+}
+
+/** A product window: a titled frame with a mono caption, used for the two live demos. */
+export function Window({
+  title,
+  caption,
+  children,
+  className,
+  right,
+  heading: Heading = "h2",
+}: {
+  title: string;
+  heading?: "h2" | "h3";
+  caption?: string;
+  children: ReactNode;
+  className?: string;
+  right?: ReactNode;
+}) {
   return (
-    <div
-      className={`rounded-2xl border border-zinc-200/80 bg-white shadow-sm shadow-zinc-900/5 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/20 ${className}`}
-    >
+    <article className={cn("relative flex flex-col border border-ink bg-paper", className)}>
+      <div className="flex items-center justify-between gap-4 border-b border-ink px-4 py-3.5 sm:px-5">
+        <Heading className="text-base font-bold">{title}</Heading>
+        {right ?? (caption && <span className="truncate font-mono text-xs text-muted">{caption}</span>)}
+      </div>
       {children}
-    </div>
+    </article>
   );
 }
 
-export function SectionTitle({ title, subtitle, right }: { title: string; subtitle?: string; right?: ReactNode }) {
+export function SectionTitle({
+  index,
+  title,
+  subtitle,
+  right,
+  id,
+}: {
+  index?: string;
+  title: string;
+  subtitle?: ReactNode;
+  right?: ReactNode;
+  id?: string;
+}) {
   return (
-    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h2 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">{title}</h2>
-        {subtitle && <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{subtitle}</p>}
+    <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline gap-x-6">
+          {index && <span className="font-mono text-sm text-muted">{index}</span>}
+          <h2 id={id} className="text-[1.75rem] font-bold leading-tight tracking-[-0.035em] sm:text-4xl">
+            {title}
+          </h2>
+        </div>
+        {subtitle && <p className="max-w-2xl leading-relaxed text-muted">{subtitle}</p>}
       </div>
       {right}
     </div>
@@ -26,10 +66,13 @@ export function SectionTitle({ title, subtitle, right }: { title: string; subtit
 
 export function PageHeader({ eyebrow, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
   return (
-    <header className="mb-6">
-      <p className="text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">{eyebrow}</p>
-      <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">{title}</h1>
-      {children && <div className="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{children}</div>}
+    <header className="border-b border-rule pb-10 pt-12 sm:pt-16">
+      <p className="label-mono">{eyebrow}</p>
+      <h1 className="mt-4 max-w-4xl text-[2.5rem] font-bold leading-[0.95] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
+        {title}
+        <span className="text-local">.</span>
+      </h1>
+      {children && <div className="mt-6 max-w-2xl text-lg leading-relaxed text-body">{children}</div>}
     </header>
   );
 }
@@ -38,14 +81,16 @@ export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: (
   return (
     <div
       role="alert"
-      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-200"
+      className="flex flex-wrap items-center justify-between gap-3 border border-bad border-l-4 bg-paper px-4 py-2 text-sm text-bad"
     >
-      <span className="flex items-center gap-2">
-        <span aria-hidden className="inline-block h-2 w-2 rounded-full bg-rose-500" />
+      <span className="flex items-center gap-2 py-1.5">
+        <svg aria-hidden width="12" height="12" viewBox="0 0 12 12">
+          <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.75" />
+        </svg>
         {message}
       </span>
       {onRetry && (
-        <button type="button" onClick={onRetry} className="btn-ghost text-rose-700 dark:text-rose-200">
+        <button type="button" onClick={onRetry} className="btn-ghost border-bad text-bad hover:border-bad">
           Retry
         </button>
       )}
@@ -55,30 +100,24 @@ export function ErrorBanner({ message, onRetry }: { message: string; onRetry?: (
 
 export function Spinner({ label = "Loading" }: { label?: string }) {
   return (
-    <span className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400" role="status">
-      <span
-        aria-hidden
-        className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-indigo-500 dark:border-zinc-700 dark:border-t-indigo-400"
-      />
+    <span className="inline-flex items-center gap-2 text-sm text-muted" role="status">
+      <span aria-hidden className="h-3 w-3 animate-spin border-2 border-rule-strong border-t-local" />
       {label}
     </span>
   );
 }
 
-export function Skeleton({ className = "" }: { className?: string }) {
-  return <div aria-hidden className={`animate-pulse rounded-lg bg-zinc-200/70 dark:bg-zinc-800 ${className}`} />;
+export function Skeleton({ className }: { className?: string }) {
+  return <div aria-hidden className={cn("animate-pulse bg-wash", className)} />;
 }
 
 export function TypingDots() {
   return (
-    <span className="inline-flex items-center gap-1" role="status" aria-label="Thinking">
-      {[0, 150, 300].map((d) => (
-        <span
-          key={d}
-          className="h-2 w-2 animate-bounce rounded-full bg-zinc-400 dark:bg-zinc-500"
-          style={{ animationDelay: `${d}ms` }}
-        />
+    <span className="inline-flex items-center gap-1.5" role="status" aria-label="Thinking">
+      {[0, 160, 320].map((d) => (
+        <span key={d} className="dot-step h-1.5 w-1.5 bg-ink" style={{ animationDelay: `${d}ms` }} />
       ))}
+      <span className="ml-1 font-mono text-xs text-muted">thinking</span>
     </span>
   );
 }

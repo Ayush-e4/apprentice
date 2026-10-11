@@ -25,7 +25,7 @@ export default function SupportApp() {
   const t = stats.data?.totals;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-6">
       {stats.error && !stats.data && <ErrorBanner message={stats.error} onRetry={stats.refresh} />}
       <SessionStats
         title="Support desk totals"
@@ -37,14 +37,14 @@ export default function SupportApp() {
           memory: stats.data?.memory_size ?? 0,
         }}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <SupportChat
           examples={questions.examples}
           examplesError={questionsError}
           onAnswered={stats.refresh}
           locked={simulating}
         />
-        <div className="space-y-4">
+        <div className="flex flex-col gap-6">
           <SimulatePanel
             questions={questions.simulation}
             running={simulating}
@@ -53,7 +53,7 @@ export default function SupportApp() {
             onReset={stats.refresh}
           />
           <Card className="p-4 sm:p-5">
-            <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">Who answered, request by request</h2>
+            <h2 className="mb-4 text-base font-bold">Who answered, request by request</h2>
             <RouteStrip servedBy={(stats.data?.timeline ?? []).map((x) => x.served_by)} max={80} label="Support requests" />
           </Card>
         </div>

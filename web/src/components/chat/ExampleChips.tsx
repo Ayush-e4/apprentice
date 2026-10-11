@@ -14,15 +14,15 @@ export default function ExampleChips({
   if (examples.length === 0) return null;
   return (
     <div>
-      <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">{label}</p>
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
+      <p className="label-mono mb-2">{label}</p>
+      <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
         {examples.map((q) => (
           <button
             key={q}
             type="button"
             disabled={disabled}
             onClick={() => onPick(q)}
-            className="shrink-0 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-left text-sm text-zinc-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-800 focus-ring disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-indigo-700 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-200"
+            className="min-h-11 shrink-0 border border-rule-strong bg-paper px-3 text-left text-[0.8125rem] text-body transition-colors hover:border-ink hover:text-ink focus-ring disabled:cursor-not-allowed disabled:opacity-45"
           >
             {q}
           </button>

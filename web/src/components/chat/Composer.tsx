@@ -8,11 +8,13 @@ export default function Composer({
   busy,
   placeholder,
   label,
+  showLabel = false,
 }: {
   onSend: (text: string) => void;
   busy: boolean;
   placeholder: string;
   label: string;
+  showLabel?: boolean;
 }) {
   const [text, setText] = useState("");
 
@@ -25,26 +27,24 @@ export default function Composer({
   }
 
   return (
-    <form onSubmit={submit} className="flex items-end gap-2">
-      <label htmlFor="composer" className="sr-only">
+    <form onSubmit={submit} className="flex flex-col gap-2">
+      <label htmlFor="composer" className={showLabel ? "text-[0.8125rem] font-semibold" : "sr-only"}>
         {label}
       </label>
-      <input
-        id="composer"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={placeholder}
-        maxLength={500}
-        autoComplete="off"
-        className="min-w-0 flex-1 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-base text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 sm:text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-      />
-      <button type="submit" className="btn btn-primary h-[46px] px-4" disabled={busy || !text.trim()}>
-        <span className="hidden sm:inline">{busy ? "Thinking…" : "Send"}</span>
-        <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4 sm:hidden" fill="currentColor">
-          <path d="M3 10l14-7-5 7 5 7-14-7z" />
-        </svg>
-        <span className="sr-only sm:hidden">Send</span>
-      </button>
+      <div className="flex">
+        <input
+          id="composer"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={placeholder}
+          maxLength={500}
+          autoComplete="off"
+          className="min-h-12 min-w-0 flex-1 border border-ink bg-paper px-4 text-base text-ink placeholder:text-muted focus:outline-2 focus:outline-offset-2 focus:outline-local sm:text-[0.9375rem]"
+        />
+        <button type="submit" className="btn btn-primary -ml-px shrink-0" disabled={busy || !text.trim()}>
+          {busy ? "Thinking…" : "Ask"}
+        </button>
+      </div>
     </form>
   );
 }
