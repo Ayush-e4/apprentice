@@ -65,7 +65,7 @@ ollama pull qwen3:1.7b
 cp .env.example .env               # Windows: copy .env.example .env
 ```
 
-Open `.env` and set `TEACHER_API_KEY`. The benchmark above used `TEACHER_MODEL=glm-5.2`; set `TEACHER_PRICE_IN` and `TEACHER_PRICE_OUT` (USD per 1M tokens) from your provider's pricing page if you want cost numbers. Every setting is explained in [docs/configuration.md](docs/configuration.md).
+Open `.env` and set `TEACHER_API_KEY`. The benchmark above used `TEACHER_MODEL=zai-org/GLM-5.2` (the default in `.env.example`); set `TEACHER_PRICE_IN` and `TEACHER_PRICE_OUT` (USD per 1M tokens) from your provider's pricing page if you want cost numbers. Every setting is explained in [docs/configuration.md](docs/configuration.md).
 
 Start the gateway:
 
