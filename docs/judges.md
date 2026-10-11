@@ -65,9 +65,9 @@ We measured the options on our SQL task before picking one:
 | Von, off the shelf | Average score 0.745 for correct queries vs 0.734 for wrong ones: it cannot tell them apart |
 | Kev-0.8B, released weights | 45.7% accuracy on our 610 held-out examples, below the 58.7% you get by always answering "wrong" |
 | GLM-5.2 as an LLM judge | Caught 30 of 30 wrong queries but accepted only 11 of 30 correct ones, about 10.6 s per check |
-| Kev-0.8B, fine-tuned on our data | **Results pending** |
+| Kev-0.8B, fine-tuned on our data | **99.3%** accuracy on the 610 held-out examples; on the same 30 pairs, accepted 30 of 30 correct and caught 29 of 30 wrong queries, about 0.4 s per check |
 
-The LLM judge is safe (it doesn't let wrong answers through) but rejects most correct ones, which sends them to the teacher and costs money and time. So it is a backup. The default plan is a small decision model trained on this task.
+The LLM judge is safe (it doesn't let wrong answers through) but rejects most correct ones, which sends them to the teacher and costs money and time. So it is a backup. The default is the small decision model trained on this task.
 
 ## Training data
 
@@ -115,4 +115,26 @@ Then restart the gateway and send `"judge": "decision"`, or run `python -m bench
 
 ## Fine-tuned judge results
 
-**Pending.** When the run finishes we will add here: held-out accuracy before and after fine-tuning, the threshold we chose, and the benchmark row for "Cascade + memory + fine-tuned judge". No numbers are reported until then.
+One run of the notebook on a free Colab T4 (352 optimizer steps, about 15 minutes of training). Both models were scored by `kev.benchmark` on the 610 held-out examples (`data/judge/heldout.jsonl`), which come from test questions the judge never saw:
+
+| Metric | Released Kev-0.8B | Fine-tuned Kev-0.8B |
+|---|---|---|
+| Accuracy | 45.7% | **99.3%** |
+| Expected calibration error (lower is better) | 0.278 | **0.004** |
+| Brier score (lower is better) | 0.607 | **0.011** |
+| Share of decisions it can automate at ≤5% error | 5.6% | **100%** |
+| Share of decisions it can automate at ≤1% error | 1.8% | **100%** |
+| Confident errors (wrong with ≥0.9 probability) | 0.0% | 0.3% |
+
+A second check, the 30 correct-vs-wrong pairs used to test every judge above (the wrong query is the gold query of another question from the same template, so it runs and returns a plausible number):
+
+| | Fine-tuned Kev-0.8B (served from Colab) |
+|---|---|
+| Correct queries scored ≥ 0.8 | 30 of 30 (mean 0.992) |
+| Wrong queries scored ≥ 0.8 | 1 of 30 (mean 0.045) |
+| Correct scored above wrong | 30 of 30 pairs |
+| Median latency per check, laptop to Colab over the tunnel | 0.41 s |
+
+We use `JUDGE_THRESHOLD=0.8`.
+
+**Limits.** The held-out examples use the same 16 question templates as training, with different stores, months and values. These numbers show the judge learned this benchmark's mistakes. They do not show it can judge arbitrary SQL. A new schema or new question shapes need new labelled data, which `bench/judge_data.py` shows how to generate.
