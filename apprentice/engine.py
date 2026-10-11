@@ -19,16 +19,13 @@ import httpx
 
 from .config import Settings
 from .db import Database
-from .judges import JudgeError, systemone_check
+from .judges import SQL_STATEMENT, TEXT_STATEMENT, JudgeError, sql_state, systemone_check, text_state
 from .memory import Hit, Memory
 from .providers import Completion, ProviderError, chat
 from .verifiers import preview_sql, verify_sql
 
 MODES = ("cascade", "student", "teacher")
 JUDGES = ("decision",)
-
-_SQL_STATEMENT = "The SQL query correctly answers the user's question, and its result is the requested answer."
-_TEXT_STATEMENT = "The assistant's answer correctly and completely answers the user's question."
 
 
 @dataclass
@@ -117,13 +114,13 @@ class Engine:
         judge = self.s.judge
         if judge is None:
             return True, None, 0.0, "judge not configured"
-        state = {"instructions": system_text(messages)[:4000], "question": last_user_text(messages)}
+        question = last_user_text(messages)
         if opts.verifier == "sql":
-            state.update(preview_sql(self.s.bench_db_path, answer))
-            statement = _SQL_STATEMENT
+            state = sql_state(question, preview_sql(self.s.bench_db_path, answer))
+            statement = SQL_STATEMENT
         else:
-            state["answer"] = answer
-            statement = _TEXT_STATEMENT
+            state = text_state(system_text(messages), question, answer)
+            statement = TEXT_STATEMENT
         try:
             v = await systemone_check(self.client, judge, self.s.judge_threshold, state, statement)
         except JudgeError as e:
