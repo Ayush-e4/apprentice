@@ -10,7 +10,8 @@ import time
 from pathlib import Path
 
 _SQL_BLOCK_RE = re.compile(r"```(?:sql|sqlite)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
-_SQL_START_RE = re.compile(r"\b(SELECT|WITH)\b", re.IGNORECASE)
+# WITH only counts when it opens a CTE ("WITH name AS ("), so prose like "the query with a join" is skipped
+_SQL_START_RE = re.compile(r"\bSELECT\b|\bWITH\s+(?:RECURSIVE\s+)?\w+\s*(?:\([^)]*\)\s*)?AS\s*\(", re.IGNORECASE)
 
 
 def extract_sql(text: str) -> str:

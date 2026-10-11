@@ -1,0 +1,48 @@
+name: Bug report
+description: Something in Apprentice doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting. Please don't paste API keys or the contents of your `.env`.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The request you sent (body and `apprentice` options) or the command you ran.
+      placeholder: |
+        1. Start the gateway with ...
+        2. POST /v1/chat/completions with {"apprentice": {"mode": "cascade", "verifier": "sql"}, ...}
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Response, trace or logs
+      description: The `apprentice` block of the response, the row from `/api/traces`, or the gateway log.
+      render: text
+  - type: dropdown
+    id: models
+    attributes:
+      label: Models
+      options:
+        - Fake models (tests/fake_server.py)
+        - Ollama student + hosted teacher
+        - Other OpenAI-compatible endpoints
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Windows 11, Python 3.12, commit abc1234
+    validations:
+      required: true
