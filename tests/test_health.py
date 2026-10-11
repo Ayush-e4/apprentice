@@ -37,10 +37,3 @@ def test_judge_down_is_reported_but_optional(client, fake):
     h = client.get("/api/health").json()
     assert h["ok"] is True, "the gateway still works without a judge"
     assert h["checks"]["judge"] == {**h["checks"]["judge"], "ok": False, "detail": "HTTP 401"}
-
-
-def test_script_is_served(client):
-    r = client.get("/health.js")
-    assert r.status_code == 200
-    assert "javascript" in r.headers["content-type"]
-    assert "/api/health" in r.text

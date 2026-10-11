@@ -6,7 +6,7 @@ QuickBite, its policies and its prices are fictional. They are not based on any 
 
 ## What it shows
 
-Open <http://localhost:8000/support> while the gateway is running.
+Open <http://localhost:3100/support> (the web app in `web/`) while the gateways are running.
 
 - **A chat window.** Ask questions or click one of the example chips. Every answer has a badge saying who answered (**student** or **teacher**), the reason (`no similar memory (best sim 0.46)` or `student passed: similar memory found (sim 0.84)`), the latency and the cost.
 - **A live panel** for this demo's traffic: requests, the share answered by the student, total cost and memory size. One bar per request shows its cost (tall purple bars are teacher calls, flat green ones are the student), and a sparkline shows the student's share over the last 10 requests.
@@ -69,7 +69,7 @@ $env:EMBED_BASE_URL="http://localhost:11434/v1"; $env:EMBED_MODEL="nomic-embed-t
 uvicorn apprentice.gateway:app --port 8000
 ```
 
-Then open <http://localhost:8000/support>. You can also point the student at Ollama (`STUDENT_BASE_URL=http://localhost:11434/v1`, `STUDENT_MODEL=qwen3:1.7b`) and keep the fake teacher.
+Then start the web app with `SUPPORT_URL` pointing at that gateway, and open <http://localhost:3100/support>. You can also point the student at Ollama (`STUDENT_BASE_URL=http://localhost:11434/v1`, `STUDENT_MODEL=qwen3:1.7b`) and keep the fake teacher.
 
 ## 60-second walkthrough
 

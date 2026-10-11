@@ -1,15 +1,14 @@
-"""FastAPI app: OpenAI-compatible endpoint plus the dashboard API.
+"""FastAPI app: OpenAI-compatible endpoint plus the APIs behind the web app (web/).
 
 Run with:  uvicorn apprentice.gateway:app --port 8000
 """
 
 import time
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 
 from .config import settings
 from .db import Database
@@ -18,8 +17,7 @@ from .health import router as health_router
 from .providers import ProviderError
 from .shop import router as shop_router
 from .support import router as support_router
-
-DASHBOARD = Path(__file__).parent / "dashboard" / "index.html"
+from .web import router as web_router
 
 db = Database(settings.db_path)
 
@@ -40,6 +38,7 @@ app = FastAPI(title="Apprentice", lifespan=lifespan)
 app.include_router(shop_router)
 app.include_router(support_router)
 app.include_router(health_router)
+app.include_router(web_router)
 
 
 def _error(status: int, message: str, kind: str) -> JSONResponse:
@@ -194,8 +193,3 @@ def bench_system_prompt():
     from bench.questions import SYSTEM_PROMPT
 
     return {"prompt": SYSTEM_PROMPT}
-
-
-@app.get("/")
-def dashboard():
-    return FileResponse(DASHBOARD)

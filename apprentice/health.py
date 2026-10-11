@@ -9,16 +9,12 @@ import asyncio
 import sqlite3
 import time
 
-from pathlib import Path
-
 import httpx
 from fastapi import APIRouter, Request
-from fastapi.responses import FileResponse
 
 from .config import Endpoint, Settings
 
 TIMEOUT_S = 5.0
-SCRIPT = Path(__file__).parent / "dashboard" / "health.js"
 
 router = APIRouter()
 
@@ -76,8 +72,3 @@ async def check(s: Settings, client: httpx.AsyncClient) -> dict:
 async def health(request: Request):
     engine = request.app.state.engine
     return await check(engine.s, engine.client)
-
-
-@router.get("/health.js")
-def health_script():
-    return FileResponse(SCRIPT, media_type="text/javascript")
