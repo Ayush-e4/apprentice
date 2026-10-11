@@ -35,14 +35,10 @@ def _headers(ep: Endpoint) -> dict[str, str]:
     return headers
 
 
-def _no_think(messages: list[dict]) -> list[dict]:
-    """Qwen3 switches off its reasoning trace when a turn ends with /no_think."""
-    out = [dict(m) for m in messages]
-    for m in reversed(out):
-        if m.get("role") == "user" and isinstance(m.get("content"), str):
-            m["content"] = m["content"] + " /no_think"
-            break
-    return out
+async def _post(client: httpx.AsyncClient, ep: Endpoint, payload: dict, timeout_s: float) -> dict:
+    r = await client.post(f"{ep.base_url}/chat/completions", headers=_headers(ep), json=payload, timeout=timeout_s)
+    r.raise_for_status()
+    return r.json()
 
 
 async def chat(
@@ -59,22 +55,19 @@ async def chat(
         raise ProviderError("no endpoint configured")
     errors = []
     for ep in endpoints:
-        payload = {
-            "model": ep.model,
-            "messages": _no_think(messages) if no_think else messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-        }
+        payload = {"model": ep.model, "messages": messages, "temperature": temperature, "max_tokens": max_tokens}
+        if no_think:
+            # Ollama's OpenAI-compatible API ignores Qwen3's "/no_think" switch but honours this.
+            payload["reasoning_effort"] = "none"
         started = time.perf_counter()
         try:
-            r = await client.post(
-                f"{ep.base_url}/chat/completions",
-                headers=_headers(ep),
-                json=payload,
-                timeout=timeout_s,
-            )
-            r.raise_for_status()
-            data = r.json()
+            try:
+                data = await _post(client, ep, payload, timeout_s)
+            except httpx.HTTPStatusError as e:
+                if "reasoning_effort" not in payload or e.response.status_code != 400:
+                    raise
+                payload.pop("reasoning_effort")  # provider doesn't support it; ask again without
+                data = await _post(client, ep, payload, timeout_s)
             content = data["choices"][0]["message"].get("content") or ""
         except (httpx.HTTPError, KeyError, IndexError, ValueError) as e:
             errors.append(f"{ep.name} ({ep.model}): {type(e).__name__}: {e}")
