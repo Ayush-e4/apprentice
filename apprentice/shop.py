@@ -29,7 +29,7 @@ EXAMPLES = [
     "Which customer living in Powai has spent the most money in total?",
     "March 2026 mein sabse zyada orders kis store pe aaye?",
     "Thane Station store pe UPI se kitne orders pay hue?",
-    "Sabse mehenga Dairy product kaunsa hai?",
+    "Andheri mein kitne customers rehte hain?",
 ]
 
 router = APIRouter()
