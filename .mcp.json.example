@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "apprentice": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/Ayush-e4/apprentice", "apprentice-mcp"],
+      "env": {
+        "APPRENTICE_URL": "http://localhost:8000"
+      }
+    }
+  }
+}

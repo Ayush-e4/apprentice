@@ -162,7 +162,23 @@ How the training data is built, how to serve a judge, and all judge settings: [d
 
 ## Use it from Claude Code or Cursor (MCP)
 
-To use Apprentice from Claude Code, Cursor or another MCP client, follow [docs/mcp.md](docs/mcp.md). That guide is being added in a separate pull request.
+Apprentice is also an MCP server, so Claude Code, Cursor, Claude Desktop or any MCP client can ask it questions as a tool (`ask`, `ask_shop_sql`, `stats`, `recent_requests`, `benchmark_results`). It talks to a running gateway, so start one first (Quick start above).
+
+No clone is needed for the MCP side. With [uv](https://docs.astral.sh/uv/), add this to your client's MCP config (for Claude Code, a `.mcp.json` in your project; a copy is in [`.mcp.json.example`](.mcp.json.example)):
+
+```json
+{
+  "mcpServers": {
+    "apprentice": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/Ayush-e4/apprentice", "apprentice-mcp"],
+      "env": { "APPRENTICE_URL": "http://localhost:8000" }
+    }
+  }
+}
+```
+
+Or install the command once with `pip install "git+https://github.com/Ayush-e4/apprentice"` and use `"command": "apprentice-mcp"`. For Claude Code from the command line: `claude mcp add apprentice -e APPRENTICE_URL=http://localhost:8000 -- uvx --from git+https://github.com/Ayush-e4/apprentice apprentice-mcp`. Then ask, for example, *"Use apprentice to find which store had the most orders in March 2026."* Tools, Cursor and Claude Desktop setup, and troubleshooting: [docs/mcp.md](docs/mcp.md).
 
 ## Models and licenses
 
