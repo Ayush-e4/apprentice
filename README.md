@@ -113,6 +113,10 @@ Results appear on the dashboard as each run finishes.
 
 For a customer-support demo, where repeated questions move from the teacher to the student, open <http://localhost:8000/support>; see [docs/support-demo.md](docs/support-demo.md).
 
+### Web app
+
+A Next.js front end with both demos and the dashboard lives in [`web/`](web/README.md): `cd web`, `npm install`, `npm run dev -- -p 3100`, then open <http://localhost:3100> (set `APPRENTICE_URL` and `SUPPORT_URL` if your gateways are not on ports 8000 and 8001).
+
 ## Per-request options
 
 Put options in an `apprentice` object in the request body, or send them as `X-Apprentice-<Option>` headers (for example `X-Apprentice-Mode: student`).
