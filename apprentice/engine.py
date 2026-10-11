@@ -109,12 +109,22 @@ class Engine:
     async def _teacher(self, messages: list[dict]) -> Completion:
         return await chat(self.client, self.s.teacher, messages, timeout_s=self.s.timeout_s)
 
+    async def _run_judge(self, kind: str, state: dict, statement: str):
+        if kind == "decision":
+            return await systemone_check(self.client, self.s.judge, self.s.judge_threshold, state, statement)
+        return await llm_check(
+            self.client, self.s.llm_judge, self.s.llm_judge_threshold, state, statement, timeout_s=self.s.timeout_s
+        )
+
     async def _judge(self, opts: Options, messages: list[dict], answer: str):
-        """Returns (ok, score, cost, note). Judge failures let the answer through."""
+        """Returns (ok, score, cost, note).
+
+        If the decision judge is unreachable and JUDGE_FALLBACK=llm, the LLM judge is asked
+        instead. If no judge can answer, the answer is let through and the note says why.
+        """
         if opts.judge not in JUDGES:
             return True, None, 0.0, ""
-        judge = self.s.judge if opts.judge == "decision" else self.s.llm_judge
-        if judge is None:
+        if (self.s.judge if opts.judge == "decision" else self.s.llm_judge) is None:
             return True, None, 0.0, "judge not configured"
         question = last_user_text(messages)
         if opts.verifier == "sql":
@@ -124,15 +134,17 @@ class Engine:
             state = text_state(system_text(messages), question, answer)
             statement = TEXT_STATEMENT
         try:
-            if opts.judge == "decision":
-                v = await systemone_check(self.client, judge, self.s.judge_threshold, state, statement)
-            else:
-                v = await llm_check(
-                    self.client, judge, self.s.llm_judge_threshold, state, statement, timeout_s=self.s.timeout_s
-                )
+            v = await self._run_judge(opts.judge, state, statement)
+            return v.ok, v.score, v.cost, f"judge {v.score:.2f}"
         except JudgeError as e:
-            return True, None, 0.0, f"judge unavailable ({e})"
-        return v.ok, v.score, v.cost, f"judge {v.score:.2f}"
+            failure = f"judge unavailable ({str(e).splitlines()[0][:160]})"
+        if opts.judge == "decision" and self.s.judge_fallback == "llm" and self.s.llm_judge is not None:
+            try:
+                v = await self._run_judge("llm", state, statement)
+                return v.ok, v.score, v.cost, f"{failure}; fallback llm judge {v.score:.2f}"
+            except JudgeError as e:
+                failure += f"; fallback llm judge unavailable ({str(e).splitlines()[0][:160]})"
+        return True, None, 0.0, failure
 
     async def handle(self, messages: list[dict], opts: Options) -> Result:
         if opts.mode not in MODES:

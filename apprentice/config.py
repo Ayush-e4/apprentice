@@ -71,6 +71,8 @@ class Settings:
     judge_threshold: float
     llm_judge: Endpoint | None
     llm_judge_threshold: float
+    # "llm": when the decision judge is unreachable, ask the LLM judge instead of letting the answer through
+    judge_fallback: str | None = None
 
 
 def load_settings() -> Settings:
@@ -91,6 +93,7 @@ def load_settings() -> Settings:
         # LLM judge: any OpenAI-compatible chat endpoint answering yes/no; defaults to the teacher
         llm_judge=_endpoint("LLM_JUDGE", "llm-judge") or (replace(teacher[0], name="llm-judge") if teacher else None),
         llm_judge_threshold=_float("LLM_JUDGE_THRESHOLD", 0.5),
+        judge_fallback=os.getenv("JUDGE_FALLBACK", "").strip().lower() or None,
     )
 
 

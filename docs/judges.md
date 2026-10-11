@@ -56,6 +56,8 @@ Set `LLM_JUDGE_BASE_URL`, `LLM_JUDGE_MODEL` and `LLM_JUDGE_API_KEY`, or leave th
 
 If the judge is not configured, can't be reached, returns an error, or (for `judge=llm`) replies with neither "yes" nor "no", the student's answer is **let through**, and the trace's `reason` records why (for example `judge unavailable (...)`). A broken judge never blocks a request.
 
+A decision judge served from a free GPU session (like the Colab notebook) can disappear when the session times out. With `JUDGE_FALLBACK=llm`, a request whose decision judge is unreachable asks the LLM judge instead, and the reason reads `judge unavailable (...); fallback llm judge 1.00`. The LLM judge is slower and stricter (on our 30 test pairs it caught 30 of 30 wrong queries but accepted only 11 of 30 correct ones), so during an outage more answers go to the teacher. That costs more but never lets more wrong answers through. If the fallback fails too, the answer is let through as above. `/api/health` and the dashboard's health dots show when the decision judge is down.
+
 ## Why we train our own
 
 We measured the options on our SQL task before picking one:
