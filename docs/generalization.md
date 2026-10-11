@@ -54,15 +54,18 @@ It prints accuracy, precision and recall (positive = "the query is correct"), th
 
 ## Results
 
-**Pending real run.** No numbers below have been measured yet.
+Real models: student Qwen3 1.7B on a laptop GTX 1650, teacher GLM-5.2, memory from the judge warm-up (27 entries, all from the seen templates), `nomic-embed-text` for memory search. Single runs.
 
 Student and cascade, 58 unseen questions:
 
 | Run | Accuracy | Handled by student | Cost | Median latency |
 |---|---|---|---|---|
-| Student + memory | pending real run | pending real run | pending real run | pending real run |
-| Cascade + memory | pending real run | pending real run | pending real run | pending real run |
-| Cascade + memory + judge | pending real run | pending real run | pending real run | pending real run |
+| Student + memory | **32.8%** | 100% | $0.0000 | 3.8 s |
+| Cascade + memory + judge | *rerun pending* | | | |
+
+The cascade + judge run is pending because the judge, then served from a free Colab session, disconnected partway through: only 5 of 58 requests were actually judged. We don't report that run.
+
+On seen templates, the same student reaches 96.3% with memory. On unseen shapes it drops to 32.8%, close to its no-memory baseline (25%). Remembered answers for other question shapes barely help.
 
 For comparison, the in-distribution test set reaches 96.3% (student + memory) and 97.5% (cascade + memory + judge); see [benchmark.md](benchmark.md#results).
 
@@ -70,11 +73,16 @@ Decision judge (Kev-0.8B, fine-tuned on the seen templates), 419 unseen examples
 
 | Metric | Value |
 |---|---|
-| Accuracy | pending real run |
-| Precision (correct) | pending real run |
-| Recall (correct) | pending real run |
-| Mean score: correct / wrong | pending real run |
-| Wrong queries scoring at or above the threshold | pending real run |
+| Accuracy | **76.8%** (99.3% on seen templates) |
+| Precision (correct) | 77.1% |
+| Recall (correct) | 68.5% |
+| Mean score: correct / wrong | 0.728 / 0.177 |
+| Wrong queries scoring at or above the threshold | 38 of 232 (16%) |
+| Correct queries scoring below the threshold | 59 of 187 (32%) |
+
+All 419 examples were scored with 0 errors (`data/unseen/judge_results.json`, threshold 0.8).
+
+**What this means.** The judge still separates right from wrong on question shapes it never saw (mean 0.73 vs 0.18), but much less sharply than on seen ones. About 1 in 6 wrong queries slip through. About a third of correct ones get sent to the teacher, which costs money but stays safe. The fix is more varied training data: new templates, real student mistakes and Hinglish phrasings. Rerun this eval after retraining to check whether it helped.
 
 ## Why it matters
 
