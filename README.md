@@ -158,6 +158,8 @@ So we fine-tune Kev-0.8B on labelled examples generated from our own benchmark. 
 
 **Fine-tuned judge results.** On the 610 held-out judge examples, accuracy went from 45.7% (released Kev-0.8B) to **99.3%**, with expected calibration error 0.004. On the 30 correct-vs-wrong pairs that Von and the LLM judge failed, it accepted 30 of 30 correct queries and caught 29 of 30 wrong ones, at about 0.4 s per check. These held-out examples share the training templates, so this shows the judge learned this benchmark, not arbitrary SQL. Full numbers: [docs/judges.md](docs/judges.md#fine-tuned-judge-results).
 
+**Judge v2** was trained on 2,418 examples: v1's data plus 4 new question shapes, 374 real student attempts from the gateway's logs and 469 Hinglish questions. On held-out sets neither judge trained on, it improves on **unseen question shapes (74.3% → 78.0%)** and **Hinglish (94.7% → 98.7%)**, and holds at 99.2% on seen ones. See [docs/judges.md](docs/judges.md#judge-v2-data).
+
 How the training data is built, how to serve a judge, and all judge settings: [docs/judges.md](docs/judges.md).
 
 ## Use it from Claude Code or Cursor (MCP)

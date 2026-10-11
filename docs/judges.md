@@ -180,8 +180,14 @@ Rebuild with `python -m bench.judge_data_v2 build --traces <gateway database>` (
 
 `notebooks/train_sql_judge_v2.ipynb` fine-tunes v2 from the released v1 judge (same base model, 2 epochs, learning rate 2e-5, fp32), scores v1 and v2 on the three held-out files, and can serve v2 on port 8010 next to a running v1.
 
-| Held-out file | v1 accuracy | v2 accuracy |
-|---|---|---|
-| Seen templates | 99.3% | pending training |
-| Held-out unseen templates | pending training | pending training |
-| Hinglish | pending training | pending training |
+One run on a free Colab T4 (606 steps), in the same session that was serving v1. Both judges were scored by `kev.benchmark` on the same three files, none of which either judge trained on:
+
+| Held-out file | Examples | v1 accuracy (ECE) | v2 accuracy (ECE) |
+|---|---|---|---|
+| Seen templates (`data/judge/heldout.jsonl`) | 610 | 99.3% (0.004) | 99.2% (0.007) |
+| Held-out unseen templates (`heldout_unseen.jsonl`) | 245 | 74.3% (0.242) | **78.0%** (0.208) |
+| Hinglish (`heldout_hinglish.jsonl`) | 607 | 94.7% (0.040) | **98.7%** (0.010) |
+
+v2 is better where v1 was weak: +3.7 points on question shapes neither judge saw (the 4 held-out unseen templates), and +4.0 points on Hinglish, with calibration error down 4×. On seen templates it holds steady (−0.2 points, inside run-to-run noise for 610 examples). It is the judge the demo gateway now uses (`JUDGE_MODEL=kev-sql-judge-v2`).
+
+Unseen question shapes remain the hard case: 78% means about 1 in 5 judgements on a new shape is wrong. More templates, more schemas and more real student mistakes are the next lever.
